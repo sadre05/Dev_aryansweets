@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — श्री आर्यन & धनराज स्वीट्स</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#F5C518; --gold-light:#FFD84D; --gold-dark:#C9960C;
+  --dark:#0D0D00; --dark2:#161600; --dark3:#1F1F00;
+  --cream:#FFF8DC; --cream2:#FFF3C4; --muted:#A89B5E;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--dark2);}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px;}
+
+.gal-topbar{position:sticky;top:0;z-index:999;background:rgba(13,13,0,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(245,197,24,0.2);display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;}
+.back-btn{display:inline-flex;align-items:center;gap:9px;background:rgba(245,197,24,0.1);border:1.5px solid rgba(245,197,24,0.3);color:var(--gold);padding:9px 20px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.25s;letter-spacing:0.4px;}
+.back-btn:hover{background:rgba(245,197,24,0.18);border-color:var(--gold);transform:translateX(-3px);}
+.back-btn svg{flex-shrink:0;}
+.topbar-logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--gold);}
+.topbar-logo span{color:var(--cream);font-style:italic;}
+.topbar-right{font-size:0.78rem;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;}
+
+.gal-hero{padding:60px 5% 40px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(245,197,24,0.08),transparent 65%);position:relative;overflow:hidden;}
+.gal-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(245,197,24,0.1) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(ellipse at 50% 0%,black 20%,transparent 70%);}
+.sec-tag{display:inline-block;color:var(--gold);font-size:0.73rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.7rem;font-weight:500;}
+.gal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;line-height:1.1;margin-bottom:0.8rem;}
+.gal-title .acc{color:var(--gold);font-style:italic;}
+.gal-sub{color:var(--muted);font-size:0.92rem;line-height:1.7;max-width:520px;margin:0 auto 2rem;}
+.divider{width:55px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:0.8rem auto 1.5rem;}
+
+.filter-bar{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;padding:0 5% 2rem;}
+.ftab{background:transparent;border:1px solid rgba(245,197,24,0.22);color:var(--muted);padding:8px 20px;border-radius:50px;font-size:0.82rem;cursor:pointer;transition:all 0.25s;font-family:'Outfit',sans-serif;}
+.ftab.active,.ftab:hover{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:700;}
+
+.gal-section{padding:0 5% 80px;}
+.photo-grid{columns:3 280px;gap:1rem;}
+.photo-card{break-inside:avoid;margin-bottom:1rem;border-radius:12px;overflow:hidden;border:1px solid rgba(245,197,24,0.1);position:relative;cursor:pointer;transition:all 0.3s;background:var(--dark3);}
+.photo-card:hover{border-color:rgba(245,197,24,0.4);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.5);}
+.photo-card .img-box{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:5rem;background:radial-gradient(circle,rgba(245,197,24,0.09),var(--dark3));overflow:hidden;position:relative;}
+.photo-card .img-box.tall{aspect-ratio:3/4;font-size:6rem;}
+.photo-card .img-box.wide{aspect-ratio:16/9;}
+.photo-card .img-box img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;}
+.photo-card:hover .img-box img{transform:scale(1.05);}
+.photo-card .img-box .fallback-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:inherit;}
+.photo-card .photo-info{padding:0.9rem 1rem;}
+.photo-card .photo-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--cream);font-weight:600;margin-bottom:3px;}
+.photo-card .photo-tag{font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:500;}
+
+.lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lb-inner{position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;}
+.lb-emoji{font-size:12rem;filter:drop-shadow(0 0 60px rgba(245,197,24,0.4));animation:popIn 0.3s ease;line-height:1;}
+.lb-img{max-width:90vw;max-height:70vh;border-radius:12px;box-shadow:0 20px 80px rgba(0,0,0,0.7);animation:popIn 0.3s ease;object-fit:contain;border:1px solid rgba(245,197,24,0.15);display:block;}
+.lb-caption{margin-top:1.2rem;text-align:center;}
+.lb-caption h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);}
+.lb-caption p{font-size:0.82rem;color:var(--muted);margin-top:4px;}
+.lb-close{position:fixed;top:1.5rem;right:1.5rem;background:rgba(245,197,24,0.15);border:1.5px solid rgba(245,197,24,0.3);color:var(--gold);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:0.25s;z-index:10000;}
+.lb-close:hover{background:var(--gold);color:var(--dark);}
+.lb-nav{position:fixed;top:50%;transform:translateY(-50%);background:rgba(245,197,24,0.12);border:1.5px solid rgba(245,197,24,0.25);color:var(--gold);width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:0.25s;z-index:10000;}
+.lb-nav:hover{background:var(--gold);color:var(--dark);}
+.lb-prev{left:1.2rem;}
+.lb-next{right:1.2rem;}
+
+.gal-footer{text-align:center;padding:2rem 5% 3rem;border-top:1px solid rgba(245,197,24,0.1);}
+.gal-footer a{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);text-decoration:none;padding:13px 32px;border-radius:6px;font-weight:700;font-size:0.9rem;transition:all 0.25s;text-transform:uppercase;letter-spacing:0.5px;}
+.gal-footer a:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,197,24,0.35);}
+
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+
+@media(max-width:640px){
+  .topbar-right{display:none;}
+  .photo-grid{columns:2 160px;}
+  .lb-nav{display:none;}
+  .lb-emoji{font-size:7rem;}
+  .gal-topbar{padding:0 4%;}
+}
+@media(max-width:400px){.photo-grid{columns:1;}}
+</style>
+</head>
+<body>
+
+<div class="gal-topbar">
+  <a class="back-btn" href="test.html">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Main Page
+  </a>
+  <div class="topbar-logo">श्री आर्यन <span>&</span> धनराज</div>
+  <div class="topbar-right">Photo Gallery</div>
+</div>
+
+<div class="gal-hero">
+  <div class="sec-tag">Our Kitchen & Ambiance</div>
+  <h1 class="gal-title">Photo <span class="acc">Gallery</span></h1>
+  <div class="divider"></div>
+  <p class="gal-sub">A glimpse into our world of flavours, freshness and warm hospitality — straight from our kitchen to your screen.</p>
+</div>
+
+<div class="filter-bar">
+  <button class="ftab active" onclick="filterGallery('all',this)">🖼 All Photos</button>
+  <button class="ftab" onclick="filterGallery('food',this)">🍽️ Food</button>
+  <button class="ftab" onclick="filterGallery('sweets',this)">🍬 Sweets</button>
+  <button class="ftab" onclick="filterGallery('cake',this)">🎂 Cakes</button>
+  <button class="ftab" onclick="filterGallery('drinks',this)">☕ Drinks</button>
+  <button class="ftab" onclick="filterGallery('snacks',this)">🥙 Snacks</button>
+</div>
+
+<div class="gal-section">
+  <div class="photo-grid" id="photoGrid"></div>
+</div>
+
+<div class="gal-footer">
+  <a href="test.html">← Back to Main Page</a>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightboxOverlay(event)">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1);event.stopPropagation()">‹</button>
+  <button class="lb-nav lb-next" onclick="lbNav(1);event.stopPropagation()">›</button>
+  <div class="lb-inner" id="lbInner">
+    <div class="lb-caption">
+      <h3 id="lbTitle"></h3>
+      <p id="lbSub"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   GALLERY DATA
+   img   = relative path from this HTML file to image
+           e.g. 'images/sweets/gulab_jamun.jpg'
+           Set to '' to show emoji fallback instead.
+   emoji = fallback shown if img is '' or fails to load
+   cat   = filter: food | sweets | cake | drinks | snacks
+   size  = '' (4:3) | 'tall' (3:4) | 'wide' (16:9)
+══════════════════════════════════════════════════════ */
+var PHOTOS = [
+
+  /* ─── FOOD / BREAKFAST ─── */
+  { img:'images/breakfast/Masala_dosa.webp',       emoji:'🫔', cat:'food',   title:'Masala Dosa',            sub:'Crispy golden perfection',           size:'' },
+  { img:'images/breakfast/dosa.webp',              emoji:'🍚', cat:'food',   title:'Classic Dosa',           sub:'Thin crispy rice & lentil crepe',    size:'wide' },
+  { img:'images/breakfast/Paper_dosa.webp',        emoji:'🥞', cat:'food',   title:'Paper Dosa',             sub:'Extra-thin, extra-crispy',           size:'' },
+  { img:'images/breakfast/Chole_Bhature.jpg',      emoji:'🥟', cat:'food',   title:'Chole Bhature',          sub:'Hearty North-Indian favourite',       size:'' },
+  { img:'images/breakfast/Paneer_Masala.webp',     emoji:'🧈', cat:'food',   title:'Paneer Masala Dosa',     sub:'A deluxe dosa classic',              size:'tall' },
+  { img:'images/breakfast/Manchurian.jpg',         emoji:'🍪', cat:'food',   title:'Manchurian',             sub:'Tangy Indo-Chinese classic',          size:'' },
+  { img:'images/breakfast/Paneer_Manchurian.webp', emoji:'🍩', cat:'food',   title:'Paneer Manchurian',      sub:'Soft paneer in spicy gravy',         size:'' },
+  { img:'images/breakfast/Paneer_Chilli.jpg',      emoji:'🌶', cat:'food',   title:'Paneer Chilli',          sub:'Crispy paneer with bell peppers',     size:'wide' },
+  { img:'images/breakfast/pizza.jpg',              emoji:'🍕', cat:'food',   title:'Pizza',                  sub:'Fresh from our kitchen',             size:'' },
+  { img:'images/breakfast/paneer_pizza.webp',      emoji:'🍕', cat:'food',   title:'Paneer Pizza',           sub:'Loaded with fresh paneer & veggies', size:'' },
+
+  /* ─── SWEETS ─── */
+  { img:'images/sweets/Gulab_Jamun.jpg',           emoji:'🫙', cat:'sweets', title:'Gulab Jamun',            sub:'Rose-cardamom syrup, served warm',   size:'' },
+  { img:'images/sweets/kaju-katli.png',            emoji:'🍮', cat:'sweets', title:'Kaju Barfi',             sub:'Pure cashew fudge with silver leaf', size:'tall' },
+  { img:'images/sweets/ghee_laddu.jpeg',           emoji:'🟡', cat:'sweets', title:'Ghee Laddu',             sub:'Pure desi ghee & cardamom',          size:'' },
+  { img:'images/sweets/motichoor_ladoo.jpg',       emoji:'🟠', cat:'sweets', title:'Motichoor Laddu',        sub:'Saffron syrup & dry fruits',         size:'' },
+  { img:'images/sweets/sukha_rasgulla.jpeg',       emoji:'⚪', cat:'sweets', title:'Sukha Rasgulla',         sub:'Bengali spongy special',             size:'' },
+  { img:'images/sweets/kalakand.jpeg',             emoji:'🍮', cat:'sweets', title:'Kalakand',               sub:'Premium milk sweet',                 size:'wide' },
+  { img:'images/sweets/creem_chamcham.png',        emoji:'🍮', cat:'sweets', title:'Cream Chamcham',         sub:'Soft & creamy delight',              size:'' },
+  { img:'images/sweets/creem_chop.jpg',            emoji:'🍮', cat:'sweets', title:'Cream Chop',             sub:'Freshly made daily',                 size:'' },
+  { img:'images/sweets/chamcham.jpeg',             emoji:'🍮', cat:'sweets', title:'Chamcham',               sub:'Classic Bengali sweet',              size:'tall' },
+  { img:'images/sweets/peda.jpeg',                 emoji:'🍮', cat:'sweets', title:'Peda',                   sub:'Traditional milk sweet',             size:'' },
+  { img:'images/sweets/khoya_slice.jpeg',          emoji:'🍮', cat:'sweets', title:'Khoya Slice',            sub:'Rich khoya, melt-in-mouth',          size:'' },
+  { img:'images/sweets/milk.jpeg',                 emoji:'🍮', cat:'sweets', title:'Milk Cake',              sub:'Classic Indian milk dessert',         size:'' },
+  { img:'images/sweets/Chocolate_barfi.webp',      emoji:'🍮', cat:'sweets', title:'Chocolate Barfi',        sub:'Chocolate lovers delight',           size:'wide' },
+  { img:'images/sweets/kaju_pista_roll.jpg',       emoji:'🍮', cat:'sweets', title:'Kaju Pista Roll',        sub:'Premium dry fruit roll',             size:'' },
+  { img:'images/sweets/Dry_fruits.jpg',            emoji:'🍮', cat:'sweets', title:'Dry Fruit Laddu',        sub:'Loaded with premium dry fruits',     size:'' },
+  { img:'images/sweets/raskadam.jpeg',             emoji:'🍮', cat:'sweets', title:'Raskadam',               sub:'Juicy & soft sweet',                 size:'' },
+  { img:'images/sweets/moti_pak.jpg',              emoji:'🍮', cat:'sweets', title:'Moti Pak',               sub:'Traditional festive sweet',          size:'tall' },
+
+  /* ─── CAKES ─── */
+  { img:'images/cake/Chocolate_Cake.webp',         emoji:'🎂', cat:'cake',   title:'Chocolate Cake',         sub:'Rich dark chocolate ganache',        size:'' },
+  { img:'images/cake/Vanilla_Cake.jpeg',           emoji:'🍰', cat:'cake',   title:'Vanilla Cream Cake',     sub:'Light sponge with fresh cream',      size:'' },
+  { img:'images/cake/Pineapple_Cake.webp',         emoji:'🍍', cat:'cake',   title:'Pineapple Cake',         sub:'Fresh cream & pineapple chunks',     size:'wide' },
+  { img:'images/cake/Black_Forest_Cake.webp',      emoji:'🍒', cat:'cake',   title:'Black Forest Cake',      sub:'Cherries, cream & chocolate',        size:'' },
+  { img:'images/cake/Butterscotch_cake.webp',      emoji:'🧁', cat:'cake',   title:'Butterscotch Cake',      sub:'Crunchy praline, kids favourite',    size:'' },
+  { img:'images/cake/White_Forest_cacke.webp',     emoji:'🧁', cat:'cake',   title:'White Forest Cake',      sub:'Delicate & creamy layers',           size:'tall' },
+  { img:'images/cake/Strawberry_Cake.webp',        emoji:'🍓', cat:'cake',   title:'Strawberry Cake',        sub:'Fresh strawberry topping',           size:'' },
+  { img:'images/cake/Choco_Chips_cake.webp',       emoji:'🍫', cat:'cake',   title:'Choco Chips Cake',       sub:'Loaded with chocolate chips',        size:'' },
+  { img:'images/cake/Fruit_cake.jpg',              emoji:'🍒', cat:'cake',   title:'Fruits Cake',            sub:'Seasonal fresh fruit topping',       size:'' },
+  { img:'images/cake/Truffle_cake.webp',           emoji:'🍫', cat:'cake',   title:'Truffle Cake',           sub:'Smooth velvety truffle finish',      size:'wide' },
+  { img:'images/cake/Khoya_cake.webp',             emoji:'🎂', cat:'cake',   title:'Khoya Cake',             sub:'Traditional khoya richness',         size:'' },
+  { img:'images/cake/Pastry.webp',                 emoji:'🍰', cat:'cake',   title:'Pastry',                 sub:'Freshly baked daily',                size:'' },
+
+  /* ─── DRINKS ─── */
+  { img:'images/drinks/filter_coffee.webp',        emoji:'☕', cat:'drinks', title:'Filter Coffee',          sub:'South Indian signature brew',        size:'' },
+  { img:'images/drinks/masala_chai.webp',          emoji:'🍵', cat:'drinks', title:'Masala Chai',            sub:'Warm spiced perfection',             size:'tall' },
+  { img:'images/drinks/lemon_soda.webp',           emoji:'🥛', cat:'drinks', title:'Fresh Lime Soda',        sub:'Refreshing with chaat masala',       size:'' },
+  { img:'images/drinks/cocacola.webp',             emoji:'🥤', cat:'drinks', title:'Coca-Cola',              sub:'Ice cold refreshment',               size:'' },
+  { img:'images/drinks/sprites.webp',              emoji:'🥤', cat:'drinks', title:'Sprite',                 sub:'Crisp & refreshing',                 size:'' },
+  { img:'images/drinks/ThumsUp.webp',              emoji:'🥤', cat:'drinks', title:'Thums Up',               sub:'Bold & fizzy',                       size:'' },
+
+  /* ─── SNACKS ─── */
+  { img:'images/snacks/samosa.jpeg',               emoji:'🔺', cat:'snacks', title:'Samosa',                 sub:'Crispy with spiced potato filling',  size:'' },
+  { img:'images/snacks/kachori.webp',              emoji:'🥙', cat:'snacks', title:'Kachori',                sub:'Crispy fried pastry, spiced lentil', size:'' },
+  { img:'images/snacks/litti.webp',                emoji:'🌶', cat:'snacks', title:'Litti',                  sub:'Traditional Bihari snack',           size:'wide' },
+  { img:'images/snacks/Cutlet.webp',               emoji:'🍞', cat:'snacks', title:'Cutlet',                 sub:'Crispy golden & delicious',          size:'' },
+  { img:'images/snacks/samosa_chat.webp',          emoji:'🧡', cat:'snacks', title:'Samosa Chaat',           sub:'Tangy street-style chaat',           size:'' },
+  { img:'images/snacks/Chowmein.webp',             emoji:'🍜', cat:'snacks', title:'Chowmein',               sub:'Spiced Indo-Chinese noodles',        size:'tall' },
+  { img:'images/snacks/Paneer_Chowmein.webp',      emoji:'🍜', cat:'snacks', title:'Paneer Chowmein',        sub:'With soft paneer cubes',             size:'' },
+  { img:'images/snacks/Burger.webp',               emoji:'🍔', cat:'snacks', title:'Burger',                 sub:'Freshly assembled, loaded',          size:'' },
+  { img:'images/snacks/Paneer_Burger.webp',        emoji:'🍔', cat:'snacks', title:'Paneer Burger',          sub:'Premium paneer patty',               size:'' },
+];
+
+/* ══════════════════════════════════════════════════════
+   BUILD GRID
+══════════════════════════════════════════════════════ */
+var visiblePhotos = [];
+var lbIndex = 0;
+
+function buildGrid(filter) {
+  var grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  visiblePhotos = PHOTOS.filter(function(p){ return filter === 'all' || p.cat === filter; });
+
+  visiblePhotos.forEach(function(p, i) {
+    var card = document.createElement('div');
+    card.className = 'photo-card';
+
+    var imgContent;
+    if (p.img) {
+      imgContent =
+        '<img src="' + p.img + '" alt="' + p.title + '" loading="lazy" ' +
+        'onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' +
+        '<span class="fallback-emoji" style="display:none">' + p.emoji + '</span>';
+    } else {
+      imgContent = '<span class="fallback-emoji">' + p.emoji + '</span>';
+    }
+
+    card.innerHTML =
+      '<div class="img-box ' + (p.size || '') + '">' + imgContent + '</div>' +
+      '<div class="photo-info">' +
+        '<div class="photo-title">' + p.title + '</div>' +
+        '<div class="photo-tag">' + p.cat + '</div>' +
+      '</div>';
+
+    card.onclick = (function(idx){ return function(){ openLightbox(idx); }; })(i);
+    grid.appendChild(card);
+  });
+}
+
+function filterGallery(cat, btn) {
+  document.querySelectorAll('.ftab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  buildGrid(cat);
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════════════════════════ */
+function openLightbox(i) {
+  lbIndex = i;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderLightbox() {
+  var p = visiblePhotos[lbIndex];
+  var inner = document.getElementById('lbInner');
+  var caption = inner.querySelector('.lb-caption');
+
+  /* Remove old media */
+  var old = inner.querySelector('.lb-img, .lb-emoji');
+  if (old) old.remove();
+
+  if (p.img) {
+    var imgEl = document.createElement('img');
+    imgEl.className = 'lb-img';
+    imgEl.src = p.img;
+    imgEl.alt = p.title;
+    imgEl.onerror = function() {
+      this.remove();
+      var em = document.createElement('div');
+      em.className = 'lb-emoji';
+      em.textContent = p.emoji;
+      inner.insertBefore(em, caption);
+    };
+    inner.insertBefore(imgEl, caption);
+  } else {
+    var emEl = document.createElement('div');
+    emEl.className = 'lb-emoji';
+    emEl.textContent = p.emoji;
+    inner.insertBefore(emEl, caption);
+  }
+
+  document.getElementById('lbTitle').textContent = p.title;
+  document.getElementById('lbSub').textContent = p.sub;
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLightboxOverlay(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + visiblePhotos.length) % visiblePhotos.length;
+  renderLightbox();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLightbox();
+  if (e.key === 'ArrowLeft')  lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+/* ── INIT ── */
+buildGrid('all');
+</script>
+</body>
+</html>
