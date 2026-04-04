@@ -732,10 +732,11 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
   <div class="sec-tag">Get In Touch</div>
   <h2 class="sec-title">Find & <span class="acc">Contact</span> Us</h2>
   <div class="divider"></div>
-  <div class="contact-grid">
+  <div class="contact-grid"> 
     <div>
       <div class="con-item"><div class="con-icon">📍</div><div><div class="con-lbl">Address</div><div class="con-val">SH 88, Baheri Bazar, Baheri,<br>Darbhanga, Bihar — 847105</div></div></div>
-      <div class="con-item"><div class="con-icon">📞</div><div><div class="con-lbl">Phone</div><div class="con-val"><a href="tel:+917992329377">+91 79923 29377</a></div></div></div>
+      <div class="con-item"><div class="con-icon">📞</div><div><div class="con-lbl">Phone_1</div><div class="con-val"><a href="tel:+919570890652">+91 9570890652</a></div></div></div>
+      <div class="con-item"><div class="con-icon">📞</div><div><div class="con-lbl">Phone_2</div><div class="con-val"><a href="tel:+917992329377">+91 79923 29377</a></div></div></div>
       <div class="con-item"><div class="con-icon">📧</div><div><div class="con-lbl">Email</div><div class="con-val"><a href="mailto:aryansweets@gmail.com">aryansweets@gmail.com</a></div></div></div>
       <div class="con-item"><div class="con-icon">🕐</div><div><div class="con-lbl">Opening Hours</div><div class="con-val"><table class="hours-tbl"><tr><td>Mon – Fri</td><td>7:00 AM – 10:00 PM</td></tr><tr><td>Saturday</td><td>7:00 AM – 11:00 PM</td></tr><tr><td>Sunday</td><td>7:00 AM – 9:00 PM</td></tr></table></div></div></div>
     </div>
@@ -743,7 +744,7 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3597.0!2d86.0480939!3d25.9464852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ede9fad16789b7:0x12879d8abcdd2fdf!2sShree%20Aryan%20Sweet%20Home!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
-</section>
+</section>       
 
 <footer>
   <div class="foot-grid">
@@ -844,7 +845,11 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
         <input type="text" id="oName" placeholder="Your name *">
         <input type="tel" id="oPhone" placeholder="Your phone number *">
         <input type="text" id="oAddr" placeholder="Delivery address / Table no.">
-        <button class="place-btn blocked" id="placeOrderBtn" onclick="placeOrder()">🎉 Place Order</button>
+        <div style="display:flex;gap:0.7rem;margin-top:0.2rem;">
+  <button onclick="btnPayNow()" style="flex:1;background:linear-gradient(135deg,#F5C518,#C9960C);color:#0D0D00;font-weight:700;font-size:0.88rem;border:none;padding:12px 8px;border-radius:8px;cursor:pointer;">💳 Pay Now</button>
+  <button onclick="btnCOD()" style="flex:1;background:transparent;color:#F5C518;font-weight:700;font-size:0.88rem;border:2px solid rgba(245,197,24,0.6);padding:12px 8px;border-radius:8px;cursor:pointer;">🚚 Cash on Delivery</button>
+</div>
+        <!-- <button class="place-btn blocked" id="placeOrderBtn" onclick="placeOrder()">🎉 Place Order</button> -->
       </div>
     </div>
   </div>
@@ -885,14 +890,12 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
       </div>
       <div class="coupon-copy-icon">📋</div>
     </div>
-
     <div class="coupon-modal-actions">
       <button class="coupon-use-btn" id="couponUseBtn" style="display:none" onclick="useCouponNow()">🛒 Use This Coupon Now</button>
       <button class="coupon-dismiss-btn" onclick="closeCouponModal()">Maybe Later</button>
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 <div class="smodal" id="smodal">
   <div class="smodal-bg" onclick="closeModal()"></div>
@@ -903,8 +906,87 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
     <button class="smodal-close" onclick="closeModal()">Great, Thanks!</button>
   </div>
 </div>
-
 <script>
+/* ══ QR LIBRARY LOAD ══ */
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  document.head.appendChild(s);
+})();
+
+/* ══ VALIDATE FORM — returns order object or null ══ */
+function validateAndBuildOrder() {
+  if (!cart.length) { toast('🛒 Please add items first!'); return null; }
+  if (!locChecked) {
+    toast('📍 Please verify your delivery location first!');
+    var w=document.getElementById('locCheckWrap');
+    if(w) w.scrollIntoView({behavior:'smooth',block:'center'});
+    return null;
+  }
+  var name=document.getElementById('oName').value.trim();
+  var phone=document.getElementById('oPhone').value.trim();
+  var addr=document.getElementById('oAddr').value.trim();
+  if (!name)  { toast('⚠️ Please enter your name!'); return null; }
+  if (!phone) { toast('⚠️ Please enter your phone!'); return null; }
+
+  var subtotal=0;
+  cart.forEach(function(c){ subtotal+=c.price*c.qty; });
+  var couponDisc=appliedCoupon?Math.min(appliedCoupon.discount,subtotal):0;
+  var delivery=getDeliveryInfo(subtotal);
+  var grandTotal=Math.max(0,subtotal-couponDisc+delivery.charge);
+
+  var lastId=parseInt(localStorage.getItem('aryansweetsOrderId')||'0',10);
+  var orderId=(lastId>=999)?1:lastId+1;
+  localStorage.setItem('aryansweetsOrderId',orderId);
+  var orderIdStr='#'+String(orderId).padStart(3,'0');
+
+  return {orderId:orderIdStr,name:name,phone:phone,addr:addr,
+          subtotal:subtotal,couponDisc:couponDisc,
+          couponCode:appliedCoupon?appliedCoupon.code:'',
+          delivery:delivery,grandTotal:grandTotal};
+}
+
+/* ══ COD BUTTON ══ */
+function btnCOD() {
+  var o=validateAndBuildOrder(); if(!o) return;
+
+  var lines=[
+    '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🔖 *Order ID:* '+o.orderId,
+    '👤 *Name:* '+o.name,
+    '📞 *Phone:* '+o.phone
+  ];
+  if(o.addr) lines.push('📍 *Address:* '+o.addr);
+  lines.push('','🛒 *Items:*');
+  cart.forEach(function(c){
+    lines.push('  '+c.emoji+' '+c.name+' ×'+c.qty+' → ₹'+(c.price*c.qty));
+  });
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('🛒 *Subtotal: ₹'+o.subtotal+'*');
+  if(o.couponDisc>0) lines.push('🎟️ *Coupon ('+o.couponCode+'): −₹'+o.couponDisc+'*');
+  lines.push(o.delivery.isFree?'🚚 *Delivery: FREE* 🎉':'🚚 *Delivery: ₹'+o.delivery.charge+'*');
+  lines.push('💰 *Grand Total: ₹'+o.grandTotal+'*');
+  lines.push('💳 *Payment: 🚚 Cash on Delivery*');
+  lines.push('✅ Please confirm & prepare!');
+
+  window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
+
+  cart=[];appliedCoupon=null;locChecked=false;
+  refreshCart();toggleCart();
+  document.getElementById('oName').value='';
+  document.getElementById('oPhone').value='';
+  document.getElementById('oAddr').value='';
+  showModal('🚚','COD Order Placed!','Thank you '+o.name+'! Pay ₹'+o.grandTotal+' on delivery. We will call '+o.phone+' to confirm. 🙏');
+}
+
+/* ══ PAY NOW BUTTON — opens payment.html ══ */
+function btnPayNow() {
+  var o=validateAndBuildOrder(); if(!o) return;
+  o.items=cart.map(function(c){return{name:c.name,emoji:c.emoji,qty:c.qty,price:c.price};});
+  try{ sessionStorage.setItem('aryanPayOrder',JSON.stringify(o)); }catch(e){}
+  window.location.href='payment.html';
+}
 /* ═══════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════ */
