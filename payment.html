@@ -174,9 +174,15 @@ function init(){
   });
 
   /* App deep links */
-  document.getElementById('lkPhonePe').href='phonepe://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-  document.getElementById('lkGPay').href   ='tez://upi/pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-  document.getElementById('lkPaytm').href  ='paytmmp://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
+//   document.getElementById('lkPhonePe').href='phonepe://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
+//   document.getElementById('lkGPay').href   ='tez://upi/pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
+//   document.getElementById('lkPaytm').href  ='paytmmp://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
+
+var upiParams='pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR&tn='+encodeURIComponent('Order '+order.orderId);
+
+document.getElementById('lkPhonePe').href='intent://pay?'+upiParams+'#Intent;scheme=upi;package=com.phonepe.app;end';
+document.getElementById('lkGPay').href   ='intent://pay?'+upiParams+'#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
+document.getElementById('lkPaytm').href  ='intent://pay?'+upiParams+'#Intent;scheme=upi;package=net.one97.paytm;end';
 }
 
 function copyUpi(){
