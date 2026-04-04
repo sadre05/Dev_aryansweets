@@ -950,25 +950,38 @@ function validateAndBuildOrder() {
 function btnCOD() {
   var o=validateAndBuildOrder(); if(!o) return;
 
+  var e1='\uD83C\uDF7D\uFE0F'; // 🍽️
+  var e2='\uD83D\uDD16';       // 🔖
+  var e3='\uD83D\uDC64';       // 👤
+  var e4='\uD83D\uDCDE';       // 📞
+  var e5='\uD83D\uDCCD';       // 📍
+  var e6='\uD83D\uDED2';       // 🛒
+  var e7='\uD83C\uDF9F\uFE0F'; // 🎟️
+  var e8='\uD83D\uDE9A';       // 🚚
+  var e9='\uD83D\uDCB0';       // 💰
+  var e10='\uD83D\uDCB3';      // 💳
+  var e11='\u2705';            // ✅
+  var line='\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+
   var lines=[
-    '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
-    '━━━━━━━━━━━━━━━━━━━━',
-    '🔖 *Order ID:* '+o.orderId,
-    '👤 *Name:* '+o.name,
-    '📞 *Phone:* '+o.phone
+    e1+' *NEW ORDER \u2014 \u0936\u094D\u0930\u0940 \u0906\u0930\u094D\u092F\u0928 \u0938\u094D\u0935\u0940\u091F\u094D\u0938*',
+    line,
+    e2+' *Order ID:* '+o.orderId,
+    e3+' *Name:* '+o.name,
+    e4+' *Phone:* '+o.phone
   ];
-  if(o.addr) lines.push('📍 *Address:* '+o.addr);
-  lines.push('','🛒 *Items:*');
+  if(o.addr) lines.push(e5+' *Address:* '+o.addr);
+  lines.push('',e6+' *Items:*');
   cart.forEach(function(c){
-    lines.push('  '+c.emoji+' '+c.name+' ×'+c.qty+' → ₹'+(c.price*c.qty));
+    lines.push('  '+c.emoji+' '+c.name+' \xD7'+c.qty+' \u2192 \u20B9'+(c.price*c.qty));
   });
-  lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('🛒 *Subtotal: ₹'+o.subtotal+'*');
-  if(o.couponDisc>0) lines.push('🎟️ *Coupon ('+o.couponCode+'): −₹'+o.couponDisc+'*');
-  lines.push(o.delivery.isFree?'🚚 *Delivery: FREE* 🎉':'🚚 *Delivery: ₹'+o.delivery.charge+'*');
-  lines.push('💰 *Grand Total: ₹'+o.grandTotal+'*');
-  lines.push('💳 *Payment: 🚚 Cash on Delivery*');
-  lines.push('✅ Please confirm & prepare!');
+  lines.push(line);
+  lines.push(e6+' *Subtotal: \u20B9'+o.subtotal+'*');
+  if(o.couponDisc>0) lines.push(e7+' *Coupon ('+o.couponCode+'): \u2212\u20B9'+o.couponDisc+'*');
+  lines.push(o.delivery.isFree ? e8+' *Delivery: FREE* \uD83C\uDF89' : e8+' *Delivery: \u20B9'+o.delivery.charge+'*');
+  lines.push(e9+' *Grand Total: \u20B9'+o.grandTotal+'*');
+  lines.push(e10+' *Payment: '+e8+' Cash on Delivery*');
+  lines.push(e11+' Please confirm & prepare!');
 
   window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
 
@@ -977,7 +990,7 @@ function btnCOD() {
   document.getElementById('oName').value='';
   document.getElementById('oPhone').value='';
   document.getElementById('oAddr').value='';
-  showModal('🚚','COD Order Placed!','Thank you '+o.name+'! Pay ₹'+o.grandTotal+' on delivery. We will call '+o.phone+' to confirm. 🙏');
+  showModal('\uD83D\uDE9A','COD Order Placed!','Thank you '+o.name+'! Pay \u20B9'+o.grandTotal+' on delivery. We will call '+o.phone+' to confirm. \uD83D\uDE4F');
 }
 
 /* ══ PAY NOW BUTTON — opens payment.html ══ */
