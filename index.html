@@ -1212,12 +1212,10 @@ function haversineKm(lat1, lng1, lat2, lng2) {
    LOCATION STATE
 ═══════════════════════════════════════════ */
 var locChecked = false;
-
 function setLocUI(state) {
-  var detecting  = document.getElementById('locDetecting');
-  var result     = document.getElementById('locResult');
-  var retryBtn   = document.getElementById('locRetryBtn');
-  var placeBtn   = document.getElementById('placeOrderBtn');
+  var detecting = document.getElementById('locDetecting');
+  var result    = document.getElementById('locResult');
+  var retryBtn  = document.getElementById('locRetryBtn');
 
   detecting.style.display = 'none';
   retryBtn.style.display  = 'none';
@@ -1226,20 +1224,16 @@ function setLocUI(state) {
 
   if (state === 'detecting') {
     detecting.style.display = 'flex';
-    placeBtn.classList.add('blocked');
+    locChecked = false;
   } else if (state === 'ok') {
     locChecked = true;
-    placeBtn.classList.remove('blocked');
   } else if (state === 'outside') {
     locChecked = false;
-    placeBtn.classList.add('blocked');
   } else if (state === 'error') {
     locChecked = false;
-    placeBtn.classList.add('blocked');
     retryBtn.style.display = 'flex';
   } else if (state === 'reset') {
     locChecked = false;
-    placeBtn.classList.add('blocked');
   }
 }
 
@@ -1360,7 +1354,8 @@ function checkByPin() {
 
   if (DELIVERY_PINS.indexOf(pin) !== -1) {
     locChecked = true;
-    document.getElementById('placeOrderBtn').classList.remove('blocked');
+    // document.getElementById('placeOrderBtn').classList.remove('blocked');
+    locChecked = true;
     resultEl.className = 'pin-result deliverable show';
     resultEl.innerHTML =
       '<strong>✅ PIN ' + pin + ' — We deliver here! 🎉</strong>' +
@@ -1371,7 +1366,8 @@ function checkByPin() {
     );
   } else {
     locChecked = false;
-    document.getElementById('placeOrderBtn').classList.add('blocked');
+    // document.getElementById('placeOrderBtn').classList.add('blocked');
+    locChecked = false;
     resultEl.className = 'pin-result not-deliverable show';
     resultEl.innerHTML =
       '<strong>❌ PIN ' + pin + ' — Outside our range</strong>' +
