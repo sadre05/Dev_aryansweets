@@ -14,7 +14,7 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .logo span{color:var(--cream);font-style:italic;}
 .back{background:transparent;border:1px solid rgba(245,197,24,0.3);color:var(--muted);padding:7px 16px;border-radius:6px;font-size:0.78rem;cursor:pointer;margin-bottom:24px;font-family:'Outfit',sans-serif;}
 .card{background:var(--dark2);border:1px solid rgba(245,197,24,0.18);border-radius:16px;padding:1.5rem;width:100%;max-width:420px;margin-bottom:1rem;}
-.amt-box{text-align:center;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:10px;padding:14px;margin-bottom:1.2rem;}
+.amt-box{text-align:center;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:10px;padding:14px;margin-bottom:1rem;width:100%;max-width:420px;}
 .amt-lbl{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .amt-val{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--gold);}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
@@ -24,11 +24,12 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .upi-lbl{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
 .upi-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);}
 .apps-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-bottom:0.7rem;}
-.apps-row{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.1rem;}
-.app-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--dark3);border:1px solid rgba(245,197,24,0.15);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--cream2);font-size:0.72rem;font-weight:500;min-width:75px;}
+.apps-row{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1rem;}
+.app-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--dark3);border:1px solid rgba(245,197,24,0.15);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--cream2);font-size:0.72rem;font-weight:500;min-width:75px;cursor:pointer;}
 .app-btn span{font-size:1.6rem;}
-.btn-gold{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);border:none;padding:14px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.note{font-size:0.73rem;color:var(--muted);text-align:center;line-height:1.5;}
+.app-btn:hover{border-color:rgba(245,197,24,0.4);background:rgba(245,197,24,0.06);}
+.btn-gold{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);border:none;padding:14px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;transition:all 0.25s;}
+.note{font-size:0.73rem;color:var(--muted);text-align:center;line-height:1.5;margin-bottom:6px;}
 .sum-item{display:flex;justify-content:space-between;font-size:0.83rem;color:var(--cream2);padding:5px 0;border-bottom:1px solid rgba(245,197,24,0.06);}
 .sum-item:last-child{border:none;}
 .sum-row{display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:0.3rem;}
@@ -40,7 +41,7 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .smodal{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;}
 .smodal.open{display:flex;}
 .smodal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.75);}
-.smodal-box{position:relative;z-index:1;background:var(--dark2);border:1px solid rgba(245,197,24,0.3);border-radius:16px;padding:2.2rem 1.8rem;text-align:center;max-width:380px;width:92%;}
+.smodal-box{position:relative;z-index:1;background:var(--dark2);border:1px solid rgba(245,197,24,0.3);border-radius:16px;padding:2.2rem 1.8rem;text-align:center;max-width:380px;width:92%;animation:popIn 0.3s ease;}
 .smodal-icon{font-size:3rem;margin-bottom:0.7rem;}
 .smodal-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--gold);margin-bottom:0.5rem;}
 .smodal-sub{color:var(--muted);font-size:0.86rem;line-height:1.65;margin-bottom:1.4rem;}
@@ -49,46 +50,38 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .empty .ei{font-size:4rem;margin-bottom:1rem;}
 .empty p{color:var(--muted);margin-bottom:1.5rem;}
 .empty a{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);padding:12px 28px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;}
+.return-hint{display:none;background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:8px;padding:12px 14px;margin-bottom:0.9rem;text-align:center;line-height:1.7;}
+.return-hint .rh-main{font-size:0.85rem;color:var(--gold);}
+.return-hint .rh-sub{font-size:0.73rem;color:var(--muted);}
+.confirm-locked{opacity:0.4 !important;cursor:not-allowed !important;background:linear-gradient(135deg,var(--gold),var(--gold-dark)) !important;animation:none !important;}
+.confirm-ready{background:linear-gradient(135deg,#4CAF50,#2E7D32) !important;animation:pulse 1.3s ease-in-out infinite !important;cursor:pointer !important;opacity:1 !important;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0.55);}50%{box-shadow:0 0 0 12px rgba(76,175,80,0);}}
 @keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
-.smodal-box{animation:popIn 0.3s ease;}    
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0.5);}
-  50%{box-shadow:0 0 0 12px rgba(76,175,80,0);}
-}
-.confirm-ready{
-  background:linear-gradient(135deg,#4CAF50,#388E3C) !important;
-  animation:pulse 1.2s ease-in-out infinite;
-}
 </style>
 </head>
 <body>
 
-<div class="logo" onclick="window.location.href='index.html'">श्री आर्यन <span>स्वीट्स</span></div>
-<button class="back" onclick="window.history.back()">← Back to Cart</button>
+<div class="logo" onclick="window.location.href='index.html'">&#2358;&#2381;&#2352;&#2368; &#2310;&#2352;&#2381;&#2351;&#2344; <span>&#2360;&#2381;&#2357;&#2368;&#2335;&#2381;&#2360;</span></div>
+<button class="back" onclick="window.history.back()">&#8592; Back to Cart</button>
 
 <div id="mainWrap" style="width:100%;max-width:420px;display:none;">
 
-  <!-- Amount -->
-  <div class="amt-box" style="width:100%;max-width:420px;border-radius:12px;margin-bottom:1rem;">
+  <div class="amt-box">
     <div class="amt-lbl">Grand Total</div>
-    <div class="amt-val">₹<span id="dispAmt">0</span></div>
+    <div class="amt-val">&#8377;<span id="dispAmt">0</span></div>
   </div>
 
-  <!-- Order Summary -->
   <div class="card">
-    <div class="sec-title">🧾 Order Summary</div>
+    <div class="sec-title">&#129518; Order Summary</div>
     <div id="sumItems"></div>
     <div style="margin-top:0.8rem;padding-top:0.6rem;border-top:1px solid rgba(245,197,24,0.1);" id="sumRows"></div>
   </div>
 
-  <!-- UPI / QR Card -->
   <div class="card">
-    <div class="sec-title">💳 Pay via UPI</div>
+    <div class="sec-title">&#128179; Pay via UPI</div>
 
     <div class="qr-wrap">
-      <div class="qr-box">
-        <div id="qrcode"></div>
-      </div>
+      <div class="qr-box"><div id="qrcode"></div></div>
     </div>
 
     <div class="upi-row" onclick="copyUpi()">
@@ -96,35 +89,34 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
         <div class="upi-lbl">UPI ID (tap to copy)</div>
         <div class="upi-val">7992329377@ybl</div>
       </div>
-      <div style="font-size:1.1rem;">📋</div>
+      <div style="font-size:1.1rem;">&#128203;</div>
     </div>
 
     <div class="apps-hint">Or open your payment app directly:</div>
     <div class="apps-row">
-      <a class="app-btn" id="lkPhonePe" href="#" target="_blank"><span>📱</span>PhonePe</a>
-      <a class="app-btn" id="lkGPay"    href="#" target="_blank"><span>🅖</span>Google Pay</a>
-      <a class="app-btn" id="lkPaytm"   href="#" target="_blank"><span>💙</span>Paytm</a>
+      <div class="app-btn" id="lkPhonePe"><span>&#128241;</span>PhonePe</div>
+      <div class="app-btn" id="lkGPay"><span>G</span>Google Pay</div>
+      <div class="app-btn" id="lkPaytm"><span>&#128153;</span>Paytm</div>
     </div>
-    <div id="returnHint" style="display:none;background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:8px;padding:10px 14px;margin-bottom:0.8rem;font-size:0.82rem;color:var(--gold);text-align:center;line-height:1.6;">
-      ⏳ Complete payment in the app…<br>
-      <span style="color:var(--muted);font-size:0.75rem;">You will return here automatically</span>
+
+    <div class="return-hint" id="returnHint">
+      <div class="rh-main">&#9203; Complete your payment in the app</div>
+      <div class="rh-sub">Come back here after payment to confirm your order</div>
     </div>
-    <button class="btn-gold" id="confirmBtn" onclick="confirmOrder()" disabled style="opacity:0.45;cursor:not-allowed;">
-      🔒 Pay First — Then Confirm
+
+    <button class="btn-gold confirm-locked" id="confirmBtn" onclick="confirmOrder()">
+      &#128274; Pay First &#8212; Then Confirm
     </button>
-    <p class="note" id="confirmNote">Open a payment app above, complete payment, then come back here to confirm.</p>
-    <!-- <button class="btn-gold" onclick="confirmOrder()">✅ I've Paid — Confirm Order</button> -->
-    <p class="note">After completing UPI payment, tap above to send order details on WhatsApp.</p> 
+    <p class="note" id="confirmNote">Tap a payment app above to pay, then come back here to confirm.</p>
   </div>
 
 </div>
 
-<!-- Empty state -->
 <div id="emptyWrap" style="display:none;width:100%;max-width:420px;">
   <div class="empty">
-    <div class="ei">🛒</div>
+    <div class="ei">&#128722;</div>
     <p>No order found. Please add items to your cart first.</p>
-    <a href="index.html">← Go Back to Menu</a>
+    <a href="index.html">&#8592; Go Back to Menu</a>
   </div>
 </div>
 
@@ -132,10 +124,10 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 <div class="smodal" id="smodal">
   <div class="smodal-bg"></div>
   <div class="smodal-box">
-    <div class="smodal-icon" id="mIcon">🎉</div>
+    <div class="smodal-icon" id="mIcon">&#127881;</div>
     <div class="smodal-title" id="mTitle"></div>
     <p class="smodal-sub" id="mSub"></p>
-    <button class="smodal-close" onclick="goHome()">Great, Thanks! 🏠</button>
+    <button class="smodal-close" onclick="goHome()">Great, Thanks! &#127968;</button>
   </div>
 </div>
 
@@ -144,6 +136,7 @@ var UPI_ID   = '7992329377@ybl';
 var UPI_NAME = 'Shree Aryan Sweets';
 var WA       = '917992329377';
 var order    = null;
+var payAppOpened = false;
 
 try{ var raw=sessionStorage.getItem('aryanPayOrder'); if(raw) order=JSON.parse(raw); }catch(e){}
 
@@ -158,113 +151,131 @@ function init(){
   var amt = order.grandTotal;
   document.getElementById('dispAmt').textContent = amt;
 
-  /* Summary items */
   var ih='';
   order.items.forEach(function(it){
-    ih+='<div class="sum-item"><span>'+it.emoji+' '+it.name+' ×'+it.qty+'</span><span>₹'+(it.price*it.qty)+'</span></div>';
+    ih+='<div class="sum-item"><span>'+it.emoji+' '+it.name+' \u00D7'+it.qty+'</span><span>\u20B9'+(it.price*it.qty)+'</span></div>';
   });
   document.getElementById('sumItems').innerHTML=ih;
 
-  /* Summary rows */
-  var rh='<div class="sum-row"><span class="l">Subtotal</span><span>₹'+order.subtotal+'</span></div>';
-  if(order.couponDisc>0) rh+='<div class="sum-row" style="color:#81c784"><span class="l">🎟️ Coupon ('+order.couponCode+')</span><span>−₹'+order.couponDisc+'</span></div>';
+  var rh='<div class="sum-row"><span class="l">Subtotal</span><span>\u20B9'+order.subtotal+'</span></div>';
+  if(order.couponDisc>0) rh+='<div class="sum-row" style="color:#81c784"><span class="l">Coupon ('+order.couponCode+')</span><span>\u2212\u20B9'+order.couponDisc+'</span></div>';
   rh+=order.delivery.isFree
-    ?'<div class="sum-row" style="color:#4CAF50"><span class="l">🚚 Delivery</span><span>FREE ✓</span></div>'
-    :'<div class="sum-row"><span class="l">🚚 Delivery</span><span>₹'+order.delivery.charge+'</span></div>';
-  rh+='<div class="sum-total"><span>Grand Total</span><span class="tv">₹'+amt+'</span></div>';
+    ?'<div class="sum-row" style="color:#4CAF50"><span class="l">Delivery</span><span>FREE \u2713</span></div>'
+    :'<div class="sum-row"><span class="l">Delivery</span><span>\u20B9'+order.delivery.charge+'</span></div>';
+  rh+='<div class="sum-total"><span>Grand Total</span><span class="tv">\u20B9'+amt+'</span></div>';
   document.getElementById('sumRows').innerHTML=rh;
 
- /* UPI link — single variable, used for both QR and app buttons */
-  var upiLink='upi://pay?pa='+encodeURIComponent(UPI_ID)
+  /* Single UPI link for both QR and app buttons */
+  var upiLink='upi://pay'
+    +'?pa='+encodeURIComponent(UPI_ID)
     +'&pn='+encodeURIComponent(UPI_NAME)
     +'&am='+amt
     +'&cu=INR'
     +'&tn='+encodeURIComponent('Order '+order.orderId);
 
-  /* QR Code */
   new QRCode(document.getElementById('qrcode'),{
     text:upiLink, width:190, height:190,
     colorDark:'#000000', colorLight:'#ffffff',
     correctLevel:QRCode.CorrectLevel.M
   });
 
-  /* App buttons — same upiLink, no conflict */
-  document.getElementById('lkPhonePe').onclick=function(e){ e.preventDefault(); openPayApp(upiLink); };
-  document.getElementById('lkGPay').onclick   =function(e){ e.preventDefault(); openPayApp(upiLink); };
-  document.getElementById('lkPaytm').onclick  =function(e){ e.preventDefault(); openPayApp(upiLink); };
+  document.getElementById('lkPhonePe').onclick = function(){ openPayApp(upiLink); };
+  document.getElementById('lkGPay').onclick    = function(){ openPayApp(upiLink); };
+  document.getElementById('lkPaytm').onclick   = function(){ openPayApp(upiLink); };
 }
 
-
 function openPayApp(url){
-  var hint=document.getElementById('returnHint');
+  payAppOpened = true;
+  document.getElementById('returnHint').style.display='block';
+  lockConfirm();
+
+  /* Use anchor click — page stays alive, app opens on top */
+  var a=document.createElement('a');
+  a.href=url;
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ document.body.removeChild(a); },500);
+
+  /* When user comes back to this page */
+  document.addEventListener('visibilitychange', onUserReturn);
+}
+
+function onUserReturn(){
+  if(document.visibilityState==='visible' && payAppOpened){
+    document.removeEventListener('visibilitychange', onUserReturn);
+    setTimeout(function(){
+      document.getElementById('returnHint').style.display='none';
+      unlockConfirm();
+    }, 800);
+  }
+}
+
+function lockConfirm(){
   var btn=document.getElementById('confirmBtn');
+  btn.classList.remove('confirm-ready');
+  btn.classList.add('confirm-locked');
+  btn.disabled=true;
+  btn.textContent='\uD83D\uDD12 Pay First \u2014 Then Confirm';
+  document.getElementById('confirmNote').textContent='Tap a payment app above to pay, then come back here to confirm.';
+}
 
-  if(hint) hint.style.display='block';
-  if(btn){ btn.disabled=true; btn.style.opacity='0.45'; btn.style.cursor='not-allowed'; btn.classList.remove('confirm-ready'); btn.textContent='\uD83D\uDD12 Pay First \u2014 Then Confirm'; }
-
-//   window.location.href=url;
-     window.open(url, '_blank');
-
-  var unlock=function(){
-    if(hint) hint.style.display='none';
-    if(btn){
-      btn.disabled=false;
-      btn.style.opacity='1';
-      btn.style.cursor='pointer';
-      btn.classList.add('confirm-ready');
-      btn.textContent='\u2705 Payment Done? Confirm Order Now!';
-      document.getElementById('confirmNote').textContent='Tap above to send your order confirmation on WhatsApp.';
-    }
-  };
-
-  var timer=setTimeout(unlock, 2500);
-
-  document.addEventListener('visibilitychange', function onBack(){
-    if(document.visibilityState==='visible'){
-      clearTimeout(timer);
-      setTimeout(unlock, 1500);
-      document.removeEventListener('visibilitychange', onBack);
-    }
-  });
+function unlockConfirm(){
+  var btn=document.getElementById('confirmBtn');
+  btn.classList.remove('confirm-locked');
+  btn.classList.add('confirm-ready');
+  btn.disabled=false;
+  btn.textContent='\u2705 Payment Done? Confirm Order Now!';
+  document.getElementById('confirmNote').textContent='Tap above to send your order confirmation on WhatsApp.';
 }
 
 function copyUpi(){
   try{
-    navigator.clipboard.writeText(UPI_ID).then(function(){ toast('📋 UPI ID copied!'); }).catch(function(){ fbCopy(); });
+    navigator.clipboard.writeText(UPI_ID)
+      .then(function(){ toast('\uD83D\uDCCB UPI ID copied!'); })
+      .catch(function(){ fbCopy(); });
   }catch(e){ fbCopy(); }
 }
 function fbCopy(){
-  var ta=document.createElement('textarea'); ta.value=UPI_ID;
-  ta.style.cssText='position:fixed;opacity:0;'; document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); toast('📋 UPI ID copied!'); }catch(e){ toast('UPI: '+UPI_ID); }
+  var ta=document.createElement('textarea');
+  ta.value=UPI_ID; ta.style.cssText='position:fixed;opacity:0;';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('\uD83D\uDCCB UPI ID copied!'); }catch(e){ toast('UPI: '+UPI_ID); }
   document.body.removeChild(ta);
 }
 
 function confirmOrder(){
   if(!order) return;
+  if(!payAppOpened){ toast('\u26A0\uFE0F Please open a payment app first!'); return; }
+
   var lines=[
-    '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
-    '━━━━━━━━━━━━━━━━━━━━',
-    '🔖 *Order ID:* '+order.orderId,
-    '👤 *Name:* '+order.name,
-    '📞 *Phone:* '+order.phone
+    '\uD83C\uDF7D\uFE0F *NEW ORDER \u2014 \u0936\u094D\u0930\u0940 \u0906\u0930\u094D\u092F\u0928 \u0938\u094D\u0935\u0940\u091F\u094D\u0938*',
+    '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501',
+    '\uD83D\uDD16 *Order ID:* '+order.orderId,
+    '\uD83D\uDC64 *Name:* '+order.name,
+    '\uD83D\uDCDE *Phone:* '+order.phone
   ];
-  if(order.addr) lines.push('📍 *Address:* '+order.addr);
-  lines.push('','🛒 *Items:*');
+  if(order.addr) lines.push('\uD83D\uDCCD *Address:* '+order.addr);
+  lines.push('','\uD83D\uDED2 *Items:*');
   order.items.forEach(function(it){
-    lines.push('  '+it.emoji+' '+it.name+' ×'+it.qty+' → ₹'+(it.price*it.qty));
+    lines.push('  '+it.emoji+' '+it.name+' \u00D7'+it.qty+' \u2192 \u20B9'+(it.price*it.qty));
   });
-  lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('🛒 *Subtotal: ₹'+order.subtotal+'*');
-  if(order.couponDisc>0) lines.push('🎟️ *Coupon ('+order.couponCode+'): −₹'+order.couponDisc+'*');
-  lines.push(order.delivery.isFree?'🚚 *Delivery: FREE* 🎉':'🚚 *Delivery: ₹'+order.delivery.charge+'*');
-  lines.push('💰 *Grand Total: ₹'+order.grandTotal+'*');
-  lines.push('💳 *Payment: UPI / Online*');
-  lines.push('✅ Please confirm & prepare!');
+  lines.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+  lines.push('\uD83D\uDED2 *Subtotal: \u20B9'+order.subtotal+'*');
+  if(order.couponDisc>0) lines.push('\uD83C\uDF9F\uFE0F *Coupon ('+order.couponCode+'): \u2212\u20B9'+order.couponDisc+'*');
+  lines.push(order.delivery.isFree
+    ?'\uD83D\uDE9A *Delivery: FREE* \uD83C\uDF89'
+    :'\uD83D\uDE9A *Delivery: \u20B9'+order.delivery.charge+'*');
+  lines.push('\uD83D\uDCB0 *Grand Total: \u20B9'+order.grandTotal+'*');
+  lines.push('\uD83D\uDCB3 *Payment: UPI / Online*');
+  lines.push('\u2705 Please confirm & prepare!');
 
   window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
   try{ sessionStorage.removeItem('aryanPayOrder'); }catch(e){}
-  showModal('🎉','Order Confirmed!','Thank you '+order.name+'! UPI payment recorded. We will confirm on '+order.phone+' shortly. 🙏');
+  showModal(
+    '\uD83C\uDF89','Order Confirmed!',
+    'Thank you '+order.name+'! UPI payment recorded. We will confirm on '+order.phone+' shortly. \uD83D\uDE4F'
+  );
 }
 
 function showModal(icon,title,sub){
