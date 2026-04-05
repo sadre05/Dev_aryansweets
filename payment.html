@@ -202,7 +202,8 @@ function openPayApp(url){
   if(hint) hint.style.display='block';
   if(btn){ btn.disabled=true; btn.style.opacity='0.45'; btn.style.cursor='not-allowed'; btn.classList.remove('confirm-ready'); btn.textContent='\uD83D\uDD12 Pay First \u2014 Then Confirm'; }
 
-  window.location.href=url;
+//   window.location.href=url;
+     window.open(url, '_blank');
 
   var unlock=function(){
     if(hint) hint.style.display='none';
