@@ -57,6 +57,20 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .confirm-ready{background:linear-gradient(135deg,#4CAF50,#2E7D32) !important;animation:pulse 1.3s ease-in-out infinite !important;cursor:pointer !important;opacity:1 !important;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0.55);}50%{box-shadow:0 0 0 12px rgba(76,175,80,0);}}
 @keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+
+/* Screenshot upload section */
+.ss-section{display:none;margin-bottom:1rem;}
+.ss-label{font-size:0.78rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ss-drop{border:2px dashed rgba(245,197,24,0.35);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:rgba(245,197,24,0.03);transition:all 0.25s;position:relative;}
+.ss-drop:hover,.ss-drop.dragover{border-color:var(--gold);background:rgba(245,197,24,0.08);}
+.ss-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.ss-icon{font-size:2rem;margin-bottom:6px;}
+.ss-text{font-size:0.8rem;color:var(--muted);}
+.ss-preview{display:none;margin-top:10px;position:relative;}
+.ss-preview img{width:100%;border-radius:8px;border:1px solid rgba(245,197,24,0.3);max-height:180px;object-fit:cover;}
+.ss-remove{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);border:none;color:#fff;border-radius:50%;width:24px;height:24px;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ss-ok{display:none;align-items:center;gap:6px;color:#4CAF50;font-size:0.82rem;margin-top:8px;font-weight:500;}
+.ss-ok svg{flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -104,6 +118,23 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
       <div class="rh-sub">Come back here after payment to confirm your order</div>
     </div>
 
+    <div class="ss-section" id="ssSection">
+      <div class="ss-label">&#128247; Payment Screenshot attach karo <span style="color:#e57373;font-size:0.7rem;">(required)</span></div>
+      <div class="ss-drop" id="ssDrop">
+        <input type="file" id="ssInput" accept="image/*" onchange="onSsSelected(this)">
+        <div class="ss-icon">&#128444;&#65039;</div>
+        <div class="ss-text">Screenshot tap karke choose karo ya yahan drop karo</div>
+      </div>
+      <div class="ss-preview" id="ssPreview">
+        <img id="ssImg" src="" alt="Payment Screenshot">
+        <button class="ss-remove" onclick="removeSs()" title="Remove">&#10005;</button>
+      </div>
+      <div class="ss-ok" id="ssOk">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        Screenshot ready! Ab Confirm karo &#128077;
+      </div>
+    </div>
+
     <button class="btn-gold confirm-locked" id="confirmBtn" onclick="confirmOrder()">
       &#128274; Pay First &#8212; Then Confirm
     </button>
@@ -137,6 +168,7 @@ var UPI_NAME = 'Shree Aryan Sweets';
 var WA       = '917992329377';
 var order    = null;
 var payAppOpened = false;
+var ssFile = null; // screenshot file
 
 try{ var raw=sessionStorage.getItem('aryanPayOrder'); if(raw) order=JSON.parse(raw); }catch(e){}
 
@@ -165,39 +197,68 @@ function init(){
   rh+='<div class="sum-total"><span>Grand Total</span><span class="tv">\u20B9'+amt+'</span></div>';
   document.getElementById('sumRows').innerHTML=rh;
 
-  /* Single UPI link for both QR and app buttons */
-  var upiLink='upi://pay'
-    +'?pa='+encodeURIComponent(UPI_ID)
+  /* Build UPI intent links — intent:// for Android avoids security decline */
+  var upiParams = 'pa='+encodeURIComponent(UPI_ID)
     +'&pn='+encodeURIComponent(UPI_NAME)
     +'&am='+amt
     +'&cu=INR'
     +'&tn='+encodeURIComponent('Order '+order.orderId);
 
+  var upiLink    = 'upi://pay?' + upiParams;
+  var phonePeUrl = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=com.phonepe.app;end';
+  var gpayUrl    = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
+  var paytmUrl   = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=net.one97.paytm;end';
+
   new QRCode(document.getElementById('qrcode'),{
-    text:upiLink, width:190, height:190,
+    text: upiLink, width:190, height:190,
     colorDark:'#000000', colorLight:'#ffffff',
     correctLevel:QRCode.CorrectLevel.M
   });
 
-  document.getElementById('lkPhonePe').onclick = function(){ openPayApp(upiLink); };
-  document.getElementById('lkGPay').onclick    = function(){ openPayApp(upiLink); };
-  document.getElementById('lkPaytm').onclick   = function(){ openPayApp(upiLink); };
+  document.getElementById('lkPhonePe').onclick = function(){ openPayApp(phonePeUrl, upiLink); };
+  document.getElementById('lkGPay').onclick    = function(){ openPayApp(gpayUrl, upiLink); };
+  document.getElementById('lkPaytm').onclick   = function(){ openPayApp(paytmUrl, upiLink); };
+
+  /* Drag-and-drop on screenshot area */
+  var drop = document.getElementById('ssDrop');
+  drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('dragover'); });
+  drop.addEventListener('dragleave', function(){ drop.classList.remove('dragover'); });
+  drop.addEventListener('drop', function(e){
+    e.preventDefault(); drop.classList.remove('dragover');
+    var f = e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')) applyScreenshot(f);
+  });
 }
 
-function openPayApp(url){
+function openPayApp(intentUrl, fallbackUrl){
   payAppOpened = true;
   document.getElementById('returnHint').style.display='block';
   lockConfirm();
 
-  /* Use anchor click — page stays alive, app opens on top */
-  var a=document.createElement('a');
-  a.href=url;
-  a.style.display='none';
+  /* Try intent link first (Android native); if fails fallback to upi:// */
+  var a = document.createElement('a');
+  a.href = intentUrl;
+  a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
-  setTimeout(function(){ document.body.removeChild(a); },500);
 
-  /* When user comes back to this page */
+  /* Fallback after 1.5s if app didn't open */
+  var fallbackTimer = setTimeout(function(){
+    var b = document.createElement('a');
+    b.href = fallbackUrl;
+    b.style.display = 'none';
+    document.body.appendChild(b);
+    b.click();
+    setTimeout(function(){ document.body.removeChild(b); }, 500);
+  }, 1500);
+
+  setTimeout(function(){
+    document.body.removeChild(a);
+    /* Clear fallback if page is still visible (app opened) */
+    if(document.visibilityState !== 'hidden') clearTimeout(fallbackTimer);
+  }, 600);
+
+  /* When user returns from payment app */
   document.addEventListener('visibilitychange', onUserReturn);
 }
 
@@ -206,9 +267,58 @@ function onUserReturn(){
     document.removeEventListener('visibilitychange', onUserReturn);
     setTimeout(function(){
       document.getElementById('returnHint').style.display='none';
-      unlockConfirm();
-    }, 800);
+      /* Show screenshot section, keep confirm locked until screenshot attached */
+      document.getElementById('ssSection').style.display='block';
+      showSsConfirmLocked();
+    }, 700);
   }
+}
+
+function showSsConfirmLocked(){
+  var btn = document.getElementById('confirmBtn');
+  btn.classList.remove('confirm-locked','confirm-ready');
+  btn.classList.add('confirm-locked');
+  btn.disabled = true;
+  btn.textContent = '\uD83D\uDDBC\uFE0F Screenshot Attach Karo Pehle';
+  document.getElementById('confirmNote').textContent = 'Payment ka screenshot attach karo, tab confirm button enable hoga.';
+}
+
+/* Screenshot selection */
+function onSsSelected(input){
+  var f = input.files && input.files[0];
+  if(f && f.type.startsWith('image/')) applyScreenshot(f);
+}
+
+function applyScreenshot(f){
+  ssFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('ssImg').src = e.target.result;
+    document.getElementById('ssPreview').style.display = 'block';
+    document.getElementById('ssDrop').style.display = 'none';
+    document.getElementById('ssOk').style.display = 'flex';
+    enableConfirm();
+  };
+  reader.readAsDataURL(f);
+}
+
+function removeSs(){
+  ssFile = null;
+  document.getElementById('ssInput').value = '';
+  document.getElementById('ssImg').src = '';
+  document.getElementById('ssPreview').style.display = 'none';
+  document.getElementById('ssDrop').style.display = 'block';
+  document.getElementById('ssOk').style.display = 'none';
+  showSsConfirmLocked();
+}
+
+function enableConfirm(){
+  var btn = document.getElementById('confirmBtn');
+  btn.classList.remove('confirm-locked');
+  btn.classList.add('confirm-ready');
+  btn.disabled = false;
+  btn.textContent = '\u2705 Confirm Order & WhatsApp bhejo!';
+  document.getElementById('confirmNote').textContent = 'Order confirm hoga aur screenshot WhatsApp pe jayegi.';
 }
 
 function lockConfirm(){
@@ -220,34 +330,8 @@ function lockConfirm(){
   document.getElementById('confirmNote').textContent='Tap a payment app above to pay, then come back here to confirm.';
 }
 
-function unlockConfirm(){
-  var btn=document.getElementById('confirmBtn');
-  btn.classList.remove('confirm-locked');
-  btn.classList.add('confirm-ready');
-  btn.disabled=false;
-  btn.textContent='\u2705 Payment Done? Confirm Order Now!';
-  document.getElementById('confirmNote').textContent='Tap above to send your order confirmation on WhatsApp.';
-}
-
-function copyUpi(){
-  try{
-    navigator.clipboard.writeText(UPI_ID)
-      .then(function(){ toast('\uD83D\uDCCB UPI ID copied!'); })
-      .catch(function(){ fbCopy(); });
-  }catch(e){ fbCopy(); }
-}
-function fbCopy(){
-  var ta=document.createElement('textarea');
-  ta.value=UPI_ID; ta.style.cssText='position:fixed;opacity:0;';
-  document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); toast('\uD83D\uDCCB UPI ID copied!'); }catch(e){ toast('UPI: '+UPI_ID); }
-  document.body.removeChild(ta);
-}
-
-function confirmOrder(){
-  if(!order) return;
-  if(!payAppOpened){ toast('\u26A0\uFE0F Please open a payment app first!'); return; }
-
+/* Build WhatsApp message text */
+function buildWaText(){
   var lines=[
     '\uD83C\uDF7D\uFE0F *NEW ORDER \u2014 \u0936\u094D\u0930\u0940 \u0906\u0930\u094D\u092F\u0928 \u0938\u094D\u0935\u0940\u091F\u094D\u0938*',
     '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501',
@@ -268,14 +352,60 @@ function confirmOrder(){
     :'\uD83D\uDE9A *Delivery: \u20B9'+order.delivery.charge+'*');
   lines.push('\uD83D\uDCB0 *Grand Total: \u20B9'+order.grandTotal+'*');
   lines.push('\uD83D\uDCB3 *Payment: UPI / Online*');
+  lines.push('\uD83D\uDCF8 *Payment screenshot attached!*');
   lines.push('\u2705 Please confirm & prepare!');
+  return lines.join('\n');
+}
 
-  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
+async function confirmOrder(){
+  if(!order) return;
+  if(!payAppOpened){ toast('\u26A0\uFE0F Please open a payment app first!'); return; }
+  if(!ssFile){ toast('\u26A0\uFE0F Payment screenshot attach karo pehle!'); return; }
+
+  var waText = buildWaText();
+
+  /* Try Web Share API with image + text (works on Android Chrome/WhatsApp) */
+  if(navigator.canShare && ssFile){
+    var shareData = { files:[ssFile], text: waText };
+    if(navigator.canShare(shareData)){
+      try{
+        await navigator.share(shareData);
+        afterConfirm();
+        return;
+      }catch(err){
+        if(err.name === 'AbortError') return; /* user cancelled share sheet */
+        /* else fall through to WhatsApp link */
+      }
+    }
+  }
+
+  /* Fallback: open WhatsApp with text; user shares screenshot manually */
+  toast('\uD83D\uDCF2 WhatsApp khul raha hai — screenshot manually attach karo');
+  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(waText),'_blank');
+  afterConfirm();
+}
+
+function afterConfirm(){
   try{ sessionStorage.removeItem('aryanPayOrder'); }catch(e){}
   showModal(
     '\uD83C\uDF89','Order Confirmed!',
     'Thank you '+order.name+'! UPI payment recorded. We will confirm on '+order.phone+' shortly. \uD83D\uDE4F'
   );
+}
+
+function copyUpi(){
+  try{
+    navigator.clipboard.writeText(UPI_ID)
+      .then(function(){ toast('\uD83D\uDCCB UPI ID copied!'); })
+      .catch(function(){ fbCopy(); });
+  }catch(e){ fbCopy(); }
+}
+function fbCopy(){
+  var ta=document.createElement('textarea');
+  ta.value=UPI_ID; ta.style.cssText='position:fixed;opacity:0;';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('\uD83D\uDCCB UPI ID copied!'); }catch(e){ toast('UPI: '+UPI_ID); }
+  document.body.removeChild(ta);
 }
 
 function showModal(icon,title,sub){
