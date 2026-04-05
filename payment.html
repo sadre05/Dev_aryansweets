@@ -174,7 +174,7 @@ function init(){
   rh+='<div class="sum-total"><span>Grand Total</span><span class="tv">₹'+amt+'</span></div>';
   document.getElementById('sumRows').innerHTML=rh;
 
-  /* UPI link */
+ /* UPI link — single variable, used for both QR and app buttons */
   var upiLink='upi://pay?pa='+encodeURIComponent(UPI_ID)
     +'&pn='+encodeURIComponent(UPI_NAME)
     +'&am='+amt
@@ -188,17 +188,10 @@ function init(){
     correctLevel:QRCode.CorrectLevel.M
   });
 
-  /* App deep links */
-//   document.getElementById('lkPhonePe').href='phonepe://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-//   document.getElementById('lkGPay').href   ='tez://upi/pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-//   document.getElementById('lkPaytm').href  ='paytmmp://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-var upiParams='pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR&tn='+encodeURIComponent('Order '+order.orderId);
-
-var upiLink='upi://pay?'+upiParams;
-
-document.getElementById('lkPhonePe').onclick=function(e){ e.preventDefault(); openPayApp(upiLink); };
-document.getElementById('lkGPay').onclick   =function(e){ e.preventDefault(); openPayApp(upiLink); };
-document.getElementById('lkPaytm').onclick  =function(e){ e.preventDefault(); openPayApp(upiLink); };
+  /* App buttons — same upiLink, no conflict */
+  document.getElementById('lkPhonePe').onclick=function(e){ e.preventDefault(); openPayApp(upiLink); };
+  document.getElementById('lkGPay').onclick   =function(e){ e.preventDefault(); openPayApp(upiLink); };
+  document.getElementById('lkPaytm').onclick  =function(e){ e.preventDefault(); openPayApp(upiLink); };
 }
 
 
