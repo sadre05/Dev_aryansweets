@@ -167,7 +167,7 @@ var UPI_ID   = '7992329377@ybl';
 var UPI_NAME = 'Shree Aryan Sweets';
 var WA       = '917992329377';
 var order    = null;
-var payAppOpened = false;
+var payAppOpened = sessionStorage.getItem('payAppOpened') === '1';
 var ssFile = null; // screenshot file
 
 try{ var raw=sessionStorage.getItem('aryanPayOrder'); if(raw) order=JSON.parse(raw); }catch(e){}
@@ -177,6 +177,12 @@ if(!order){
 } else {
   document.getElementById('mainWrap').style.display='block';
   init();
+  /* Agar user pehle payment app gaya tha aur wapas aaya — screenshot section dikhao */
+  if(payAppOpened){
+    document.getElementById('returnHint').style.display = 'none';
+    document.getElementById('ssSection').style.display = 'block';
+    showSsConfirmLocked();
+  }
 }
 
 function init(){
@@ -204,10 +210,7 @@ function init(){
     +'&cu=INR'
     +'&tn='+encodeURIComponent('Order '+order.orderId);
 
-  var upiLink    = 'upi://pay?' + upiParams;
-  var phonePeUrl = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=com.phonepe.app;end';
-  var gpayUrl    = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
-  var paytmUrl   = 'intent://pay?' + upiParams + '#Intent;scheme=upi;package=net.one97.paytm;end';
+  var upiLink = 'upi://pay?' + upiParams;
 
   new QRCode(document.getElementById('qrcode'),{
     text: upiLink, width:190, height:190,
@@ -215,9 +218,10 @@ function init(){
     correctLevel:QRCode.CorrectLevel.M
   });
 
-  document.getElementById('lkPhonePe').onclick = function(){ openPayApp(phonePeUrl, upiLink); };
-  document.getElementById('lkGPay').onclick    = function(){ openPayApp(gpayUrl, upiLink); };
-  document.getElementById('lkPaytm').onclick   = function(){ openPayApp(paytmUrl, upiLink); };
+  /* Teeno buttons same upiLink — window.location.href se open hoga */
+  document.getElementById('lkPhonePe').onclick = function(){ openPayApp(upiLink); };
+  document.getElementById('lkGPay').onclick    = function(){ openPayApp(upiLink); };
+  document.getElementById('lkPaytm').onclick   = function(){ openPayApp(upiLink); };
 
   /* Drag-and-drop on screenshot area */
   var drop = document.getElementById('ssDrop');
@@ -230,36 +234,23 @@ function init(){
   });
 }
 
-function openPayApp(intentUrl, fallbackUrl){
+function openPayApp(upiUrl){
   payAppOpened = true;
-  document.getElementById('returnHint').style.display='block';
+  sessionStorage.setItem('payAppOpened', '1'); /* page reload ke baad bhi yaad rahe */
+  document.getElementById('returnHint').style.display = 'block';
   lockConfirm();
 
-  /* Try intent link first (Android native); if fails fallback to upi:// */
-  var a = document.createElement('a');
-  a.href = intentUrl;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-
-  /* Fallback after 1.5s if app didn't open */
-  var fallbackTimer = setTimeout(function(){
-    var b = document.createElement('a');
-    b.href = fallbackUrl;
-    b.style.display = 'none';
-    document.body.appendChild(b);
-    b.click();
-    setTimeout(function(){ document.body.removeChild(b); }, 500);
-  }, 1500);
-
-  setTimeout(function(){
-    document.body.removeChild(a);
-    /* Clear fallback if page is still visible (app opened) */
-    if(document.visibilityState !== 'hidden') clearTimeout(fallbackTimer);
-  }, 600);
-
-  /* When user returns from payment app */
+  /* visibilitychange — jab user payment app se wapas aaye */
+  document.removeEventListener('visibilitychange', onUserReturn);
   document.addEventListener('visibilitychange', onUserReturn);
+
+  /*
+   * window.location.href — sabse reliable method.
+   * anchor.click() / window.open() se PhonePe "security decline" deta hai
+   * kyunki wo untrusted source samajhta hai.
+   * location.href se browser khud navigate karta hai — UPI apps trust karte hain.
+   */
+  window.location.href = upiUrl;
 }
 
 function onUserReturn(){
@@ -359,34 +350,53 @@ function buildWaText(){
 
 async function confirmOrder(){
   if(!order) return;
-  if(!payAppOpened){ toast('\u26A0\uFE0F Please open a payment app first!'); return; }
+  if(!payAppOpened){ toast('\u26A0\uFE0F Pehle payment app se pay karo!'); return; }
   if(!ssFile){ toast('\u26A0\uFE0F Payment screenshot attach karo pehle!'); return; }
 
   var waText = buildWaText();
 
-  /* Try Web Share API with image + text (works on Android Chrome/WhatsApp) */
-  if(navigator.canShare && ssFile){
-    var shareData = { files:[ssFile], text: waText };
+  /*
+   * STEP 1 — Image share: Web Share API se screenshot share karo.
+   *   Android Chrome pe ye native share sheet kholta hai jisme WhatsApp choose kar sako.
+   *   Image share hone ke baad STEP 2 automatically chalega.
+   *
+   * STEP 2 — Text: wa.me link se WhatsApp kholo aur order details pre-fill ho jayegi.
+   *   User ko bas Send dabana hoga.
+   */
+
+  var shared = false;
+
+  /* Try image share first */
+  if(navigator.canShare){
+    var shareData = { files: [ssFile], title: 'Payment Screenshot — Order '+order.orderId };
     if(navigator.canShare(shareData)){
       try{
         await navigator.share(shareData);
-        afterConfirm();
-        return;
-      }catch(err){
-        if(err.name === 'AbortError') return; /* user cancelled share sheet */
-        /* else fall through to WhatsApp link */
+        shared = true;
+      } catch(err){
+        if(err.name === 'AbortError') return; /* user cancelled — kuch mat karo */
       }
     }
   }
 
-  /* Fallback: open WhatsApp with text; user shares screenshot manually */
-  toast('\uD83D\uDCF2 WhatsApp khul raha hai — screenshot manually attach karo');
-  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(waText),'_blank');
+  if(!shared){
+    /* Fallback agar Web Share supported nahi — direct WhatsApp text only */
+    toast('\uD83D\uDCF8 Screenshot manually WhatsApp pe bhejo');
+  }
+
+  /* Step 2: WhatsApp text open karo — thodi delay taaki share sheet band ho */
+  setTimeout(function(){
+    window.location.href = 'https://wa.me/'+WA+'?text='+encodeURIComponent(waText);
+  }, shared ? 800 : 100);
+
   afterConfirm();
 }
 
 function afterConfirm(){
-  try{ sessionStorage.removeItem('aryanPayOrder'); }catch(e){}
+  try{
+    sessionStorage.removeItem('aryanPayOrder');
+    sessionStorage.removeItem('payAppOpened');
+  }catch(e){}
   showModal(
     '\uD83C\uDF89','Order Confirmed!',
     'Thank you '+order.name+'! UPI payment recorded. We will confirm on '+order.phone+' shortly. \uD83D\uDE4F'
