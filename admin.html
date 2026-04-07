@@ -344,17 +344,6 @@ window.doLogout = function() {
   document.getElementById('loginPass').value = '';
 };
 
-// ── Auto-restore session if token exists ──
-(function() {
-  var saved = sessionStorage.getItem('aryanAdminToken');
-  if (saved) {
-    adminToken = saved;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display   = 'block';
-    loadOrders();
-  }
-})();
-
 // ── LOAD ORDERS ──
 window.loadOrders = async function() {
   document.getElementById('ordersList').innerHTML = '<div class="loading"><div class="spin"></div><br>Loading orders...</div>';
@@ -376,6 +365,17 @@ window.loadOrders = async function() {
     document.getElementById('ordersList').innerHTML = '<div class="empty-orders"><div class="ei">⚠️</div><p>Error loading orders. Network issue ya Cloud Function down hai.</p></div>';
   }
 };
+
+// ── Auto-restore session if token exists ──
+(function() {
+  var saved = sessionStorage.getItem('aryanAdminToken');
+  if (saved) {
+    adminToken = saved;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display   = 'block';
+    loadOrders();
+  }
+})();
 
 // ── CALC STATS ──
 function calcStats() {
