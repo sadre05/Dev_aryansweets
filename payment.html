@@ -7,15 +7,30 @@
 <script src="config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- ═══════════════════════════════════════════════════
+     RAZORPAY SKELETON — Jab gateway add karna ho to:
+     1. Yeh script uncomment karo:
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+     2. initRazorpay() function ke andar key aur order_id daalo
+     3. confirmOrder() mein "razorpay" branch enable karo
+     4. main.py mein /createRazorpayOrder aur /verifyPayment endpoints add karo
+     ═══════════════════════════════════════════════════ -->
+
 <style>
-:root{--gold:#F5C518;--gold-dark:#C9960C;--dark:#0D0D00;--dark2:#161600;--dark3:#1F1F00;--cream:#FFF8DC;--cream2:#FFF3C4;--muted:#A89B5E;--green:#4CAF50;}
+:root{
+  --gold:#F5C518;--gold-dark:#C9960C;--gold-light:#FFD84D;
+  --dark:#0D0D00;--dark2:#161600;--dark3:#1F1F00;
+  --cream:#FFF8DC;--cream2:#FFF3C4;--muted:#A89B5E;
+  --green:#4CAF50;--red:#E53935;--blue:#42A5F5;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px 16px 60px;}
+body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:30px 16px 80px;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold);text-align:center;margin-bottom:6px;cursor:pointer;}
 .logo span{color:var(--cream);font-style:italic;}
 .back{background:transparent;border:1px solid rgba(245,197,24,0.3);color:var(--muted);padding:7px 16px;border-radius:6px;font-size:0.78rem;cursor:pointer;margin-bottom:24px;font-family:'Outfit',sans-serif;}
 .card{background:var(--dark2);border:1px solid rgba(245,197,24,0.18);border-radius:16px;padding:1.5rem;width:100%;max-width:420px;margin-bottom:1rem;}
-.amt-box{text-align:center;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:10px;padding:14px;margin-bottom:1.2rem;}
+.amt-box{text-align:center;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.2);border-radius:12px;padding:14px;margin-bottom:1rem;width:100%;max-width:420px;}
 .amt-lbl{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .amt-val{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--gold);}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
@@ -25,33 +40,63 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 .upi-lbl{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
 .upi-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);}
 .apps-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-bottom:0.7rem;}
-.apps-row{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.1rem;}
+.apps-row{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.2rem;}
 .app-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--dark3);border:1px solid rgba(245,197,24,0.15);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--cream2);font-size:0.72rem;font-weight:500;min-width:75px;}
 .app-btn span{font-size:1.6rem;}
-.btn-gold{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);border:none;padding:14px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.note{font-size:0.73rem;color:var(--muted);text-align:center;line-height:1.5;}
 .sum-item{display:flex;justify-content:space-between;font-size:0.83rem;color:var(--cream2);padding:5px 0;border-bottom:1px solid rgba(245,197,24,0.06);}
 .sum-item:last-child{border:none;}
 .sum-row{display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:0.3rem;}
 .sum-row .l{color:var(--muted);}
 .sum-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:600;padding-top:0.6rem;border-top:1px solid rgba(245,197,24,0.15);margin-top:0.4rem;}
 .sum-total .tv{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);}
+
+/* ── SCREENSHOT UPLOAD SECTION ── */
+.upload-section{margin-top:1.2rem;border-top:1px solid rgba(245,197,24,0.12);padding-top:1.2rem;}
+.upload-title{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.7rem;text-align:center;}
+.upload-zone{border:2px dashed rgba(245,197,24,0.35);border-radius:12px;padding:1.4rem;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(245,197,24,0.03);position:relative;}
+.upload-zone:hover{border-color:var(--gold);background:rgba(245,197,24,0.07);}
+.upload-zone.has-img{border-color:var(--green);border-style:solid;background:rgba(76,175,80,0.05);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:2.2rem;margin-bottom:0.5rem;}
+.upload-hint{font-size:0.78rem;color:var(--muted);line-height:1.5;}
+.upload-hint strong{color:var(--gold);}
+.preview-wrap{margin-top:0.8rem;display:none;}
+.preview-wrap img{width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid rgba(245,197,24,0.2);}
+.preview-clear{font-size:0.72rem;color:var(--red);cursor:pointer;margin-top:0.4rem;text-align:center;display:block;}
+.upload-ok{font-size:0.78rem;color:var(--green);text-align:center;margin-top:0.5rem;display:none;}
+
+/* ── BUTTONS ── */
+.btn-gold{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);border:none;padding:14px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;transition:opacity 0.2s;}
+.btn-gold:disabled{opacity:0.35;cursor:not-allowed;}
+.btn-call{width:100%;background:linear-gradient(135deg,#4CAF50,#2e7d32);color:#fff;border:none;padding:13px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;letter-spacing:0.3px;display:none;margin-top:0.5rem;text-decoration:none;text-align:center;}
+.note{font-size:0.73rem;color:var(--muted);text-align:center;line-height:1.5;margin-top:6px;}
+
+/* ── RAZORPAY BUTTON SKELETON (hidden by default) ── */
+/* Uncomment + show when Razorpay is integrated */
+.btn-razorpay{width:100%;background:linear-gradient(135deg,#528FF0,#3456C8);color:#fff;border:none;padding:14px;border-radius:9px;font-weight:700;font-size:0.95rem;cursor:pointer;margin-bottom:8px;display:none;/* RAZORPAY: change display:none → block to enable */}
+
+/* ── TOAST ── */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);padding:11px 26px;border-radius:50px;font-weight:600;font-size:0.86rem;z-index:9999;transition:all 0.38s;white-space:nowrap;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── SUCCESS MODAL ── */
 .smodal{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;}
 .smodal.open{display:flex;}
-.smodal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.75);}
-.smodal-box{position:relative;z-index:1;background:var(--dark2);border:1px solid rgba(245,197,24,0.3);border-radius:16px;padding:2.2rem 1.8rem;text-align:center;max-width:380px;width:92%;}
+.smodal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.8);}
+.smodal-box{position:relative;z-index:1;background:var(--dark2);border:1px solid rgba(245,197,24,0.3);border-radius:16px;padding:2.2rem 1.8rem;text-align:center;max-width:360px;width:92%;animation:popIn 0.3s ease;}
 .smodal-icon{font-size:3rem;margin-bottom:0.7rem;}
 .smodal-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--gold);margin-bottom:0.5rem;}
-.smodal-sub{color:var(--muted);font-size:0.86rem;line-height:1.65;margin-bottom:1.4rem;}
+.smodal-sub{color:var(--muted);font-size:0.86rem;line-height:1.65;margin-bottom:1.2rem;}
+.smodal-actions{display:flex;flex-direction:column;gap:0.6rem;}
 .smodal-close{background:var(--gold);color:var(--dark);border:none;padding:11px 28px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.88rem;}
+.smodal-call{background:var(--green);color:#fff;border:none;padding:11px 28px;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.88rem;text-decoration:none;display:block;}
+
+/* ── EMPTY ── */
 .empty{text-align:center;padding:4rem 1rem;}
 .empty .ei{font-size:4rem;margin-bottom:1rem;}
 .empty p{color:var(--muted);margin-bottom:1.5rem;}
 .empty a{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);padding:12px 28px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;}
 @keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
-.smodal-box{animation:popIn 0.3s ease;}
 </style>
 </head>
 <body>
@@ -62,7 +107,7 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 <div id="mainWrap" style="width:100%;max-width:420px;display:none;">
 
   <!-- Amount -->
-  <div class="amt-box" style="width:100%;max-width:420px;border-radius:12px;margin-bottom:1rem;">
+  <div class="amt-box">
     <div class="amt-lbl">Grand Total</div>
     <div class="amt-val">₹<span id="dispAmt">0</span></div>
   </div>
@@ -74,20 +119,18 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
     <div style="margin-top:0.8rem;padding-top:0.6rem;border-top:1px solid rgba(245,197,24,0.1);" id="sumRows"></div>
   </div>
 
-  <!-- UPI / QR Card -->
+  <!-- UPI / QR + Screenshot Card -->
   <div class="card">
     <div class="sec-title">💳 Pay via UPI</div>
 
     <div class="qr-wrap">
-      <div class="qr-box">
-        <div id="qrcode"></div>
-      </div>
+      <div class="qr-box"><div id="qrcode"></div></div>
     </div>
 
     <div class="upi-row" onclick="copyUpi()">
       <div>
         <div class="upi-lbl">UPI ID (tap to copy)</div>
-        <div class="upi-val">7992329377@ybl</div>
+        <div class="upi-val" id="dispUpiId"></div>
       </div>
       <div style="font-size:1.1rem;">📋</div>
     </div>
@@ -99,8 +142,50 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
       <a class="app-btn" id="lkPaytm"   href="#" target="_blank"><span>💙</span>Paytm</a>
     </div>
 
-    <button class="btn-gold" onclick="confirmOrder()">✅ I've Paid — Confirm Order</button>
-    <p class="note">After completing UPI payment, tap above to send order details on WhatsApp.</p>
+    <!-- ── SCREENSHOT UPLOAD ── -->
+    <div class="upload-section">
+      <div class="upload-title">📸 Step 2 — Attach Payment Screenshot</div>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="screenshotInput" accept="image/*" onchange="handleScreenshot(this)">
+        <div class="upload-icon">📷</div>
+        <div class="upload-hint">
+          <strong>Tap here to upload screenshot</strong><br>
+          Payment ke baad screenshot attach karo<br>
+          tabhi Confirm button active hoga
+        </div>
+      </div>
+
+      <div class="preview-wrap" id="previewWrap">
+        <img id="previewImg" src="" alt="Payment screenshot">
+        <span class="preview-clear" onclick="clearScreenshot()">✕ Remove & re-upload</span>
+      </div>
+      <div class="upload-ok" id="uploadOk">✅ Screenshot attached! Ab Confirm karo.</div>
+    </div>
+
+    <!-- ── RAZORPAY BUTTON SKELETON ──
+         Jab Razorpay integrate karna ho:
+         1. display:none → display:block karo CSS mein
+         2. initRazorpay() function mein key_id daalo
+         3. Backend se order_id fetch karo /createRazorpayOrder se
+    -->
+    <button class="btn-razorpay" id="btnRazorpay" onclick="initRazorpay()">
+      ⚡ Pay Securely via Razorpay
+    </button>
+
+    <!-- Confirm button — disabled jab tak screenshot nahi -->
+    <button class="btn-gold" id="btnConfirm" onclick="confirmOrder()" disabled style="margin-top:1rem;">
+      ✅ I've Paid — Confirm Order
+    </button>
+
+    <!-- Call button — sirf post-confirmation dikhta hai -->
+    <a class="btn-call" id="btnCall" href="#" onclick="return false;">
+      📞 Call Shop to Confirm
+    </a>
+
+    <p class="note" id="noteText">
+      Screenshot attach karo, phir Confirm karo — order details + screenshot WhatsApp pe jayega.
+    </p>
   </div>
 
 </div>
@@ -115,124 +200,335 @@ body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);m
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Success Modal -->
 <div class="smodal" id="smodal">
   <div class="smodal-bg"></div>
   <div class="smodal-box">
-    <div class="smodal-icon" id="mIcon">🎉</div>
-    <div class="smodal-title" id="mTitle"></div>
+    <div class="smodal-icon">🎉</div>
+    <div class="smodal-title">Order Sent!</div>
     <p class="smodal-sub" id="mSub"></p>
-    <button class="smodal-close" onclick="goHome()">Great, Thanks! 🏠</button>
+    <div class="smodal-actions">
+      <a class="smodal-call" id="modalCallBtn" href="#">📞 Call Shop Now</a>
+      <button class="smodal-close" onclick="goHome()">🏠 Back to Home</button>
+    </div>
   </div>
 </div>
 
 <script>
-var UPI_ID   = CONFIG.contact.upi_id;
-var UPI_NAME = CONFIG.shop.name_english;
-var WA       = CONFIG.contact.whatsapp;
-var order    = null;
+/* ══════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════ */
+var API      = window.CONFIG.api.base_url;
+var UPI_ID   = window.CONFIG.contact.upi_id;
+var UPI_NAME = window.CONFIG.shop.name_english;
+var WA       = window.CONFIG.contact.whatsapp;
+var PHONE    = window.CONFIG.shop.phone_call;
 
-try{ var raw=sessionStorage.getItem('aryanPayOrder'); if(raw) order=JSON.parse(raw); }catch(e){}
+var order          = null;
+var screenshotB64  = null;   // base64 image data
+var screenshotFile = null;   // original File object
+var orderSubmitted = false;
 
-if(!order){
-  document.getElementById('emptyWrap').style.display='block';
+/* ══════════════════════════════════════════════
+   INIT — Load order from sessionStorage
+══════════════════════════════════════════════ */
+try { var raw = sessionStorage.getItem('aryanPayOrder'); if (raw) order = JSON.parse(raw); } catch(e) {}
+
+if (!order) {
+  document.getElementById('emptyWrap').style.display = 'block';
 } else {
-  document.getElementById('mainWrap').style.display='block';
-  init();
+  document.getElementById('mainWrap').style.display = 'block';
+  document.getElementById('dispUpiId').textContent = UPI_ID;
+  document.getElementById('modalCallBtn').href = 'tel:' + PHONE;
+  initPage();
 }
 
-function init(){
+/* ══════════════════════════════════════════════
+   PAGE INIT
+══════════════════════════════════════════════ */
+function initPage() {
   var amt = order.grandTotal;
   document.getElementById('dispAmt').textContent = amt;
 
-  /* Summary items */
-  var ih='';
-  order.items.forEach(function(it){
-    ih+='<div class="sum-item"><span>'+it.emoji+' '+it.name+' ×'+it.qty+'</span><span>₹'+(it.price*it.qty)+'</span></div>';
+  // Summary items
+  var ih = '';
+  order.items.forEach(function(it) {
+    ih += '<div class="sum-item"><span>' + it.emoji + ' ' + it.name + ' ×' + it.qty + '</span><span>₹' + (it.price * it.qty) + '</span></div>';
   });
-  document.getElementById('sumItems').innerHTML=ih;
+  document.getElementById('sumItems').innerHTML = ih;
 
-  /* Summary rows */
-  var rh='<div class="sum-row"><span class="l">Subtotal</span><span>₹'+order.subtotal+'</span></div>';
-  if(order.couponDisc>0) rh+='<div class="sum-row" style="color:#81c784"><span class="l">🎟️ Coupon ('+order.couponCode+')</span><span>−₹'+order.couponDisc+'</span></div>';
-  rh+=order.delivery.isFree
-    ?'<div class="sum-row" style="color:#4CAF50"><span class="l">🚚 Delivery</span><span>FREE ✓</span></div>'
-    :'<div class="sum-row"><span class="l">🚚 Delivery</span><span>₹'+order.delivery.charge+'</span></div>';
-  rh+='<div class="sum-total"><span>Grand Total</span><span class="tv">₹'+amt+'</span></div>';
-  document.getElementById('sumRows').innerHTML=rh;
+  // Summary rows
+  var rh = '<div class="sum-row"><span class="l">Subtotal</span><span>₹' + order.subtotal + '</span></div>';
+  if (order.couponDisc > 0) rh += '<div class="sum-row" style="color:#81c784"><span class="l">🎟️ Coupon (' + order.couponCode + ')</span><span>−₹' + order.couponDisc + '</span></div>';
+  rh += order.delivery.isFree
+    ? '<div class="sum-row" style="color:#4CAF50"><span class="l">🚚 Delivery</span><span>FREE ✓</span></div>'
+    : '<div class="sum-row"><span class="l">🚚 Delivery</span><span>₹' + order.delivery.charge + '</span></div>';
+  rh += '<div class="sum-total"><span>Grand Total</span><span class="tv">₹' + amt + '</span></div>';
+  document.getElementById('sumRows').innerHTML = rh;
 
-  /* UPI link */
-  var upiLink='upi://pay?pa='+encodeURIComponent(UPI_ID)
-    +'&pn='+encodeURIComponent(UPI_NAME)
-    +'&am='+amt
-    +'&cu=INR'
-    +'&tn='+encodeURIComponent('Order '+order.orderId);
+  // UPI deep link
+  var upiLink = 'upi://pay?pa=' + encodeURIComponent(UPI_ID)
+    + '&pn=' + encodeURIComponent(UPI_NAME)
+    + '&am=' + amt
+    + '&cu=INR'
+    + '&tn=' + encodeURIComponent('Order ' + order.orderId);
 
-  /* QR Code */
-  new QRCode(document.getElementById('qrcode'),{
-    text:upiLink, width:190, height:190,
-    colorDark:'#000000', colorLight:'#ffffff',
-    correctLevel:QRCode.CorrectLevel.M
+  // QR Code
+  new QRCode(document.getElementById('qrcode'), {
+    text: upiLink, width: 190, height: 190,
+    colorDark: '#000000', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
   });
 
-  /* App deep links */
-  document.getElementById('lkPhonePe').href='phonepe://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-  document.getElementById('lkGPay').href   ='tez://upi/pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-  document.getElementById('lkPaytm').href  ='paytmmp://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+amt+'&cu=INR';
-
+  // App deep links
+  document.getElementById('lkPhonePe').href = 'phonepe://pay?pa=' + encodeURIComponent(UPI_ID) + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + amt + '&cu=INR';
+  document.getElementById('lkGPay').href    = 'tez://upi/pay?pa='  + encodeURIComponent(UPI_ID) + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + amt + '&cu=INR';
+  document.getElementById('lkPaytm').href   = 'paytmmp://pay?pa='  + encodeURIComponent(UPI_ID) + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + amt + '&cu=INR';
 }
 
-function copyUpi(){
-  try{
-    navigator.clipboard.writeText(UPI_ID).then(function(){ toast('📋 UPI ID copied!'); }).catch(function(){ fbCopy(); });
-  }catch(e){ fbCopy(); }
+/* ══════════════════════════════════════════════
+   SCREENSHOT UPLOAD
+══════════════════════════════════════════════ */
+function handleScreenshot(input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  // Size check (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    toast('⚠️ Image too large! Max 5MB allowed.');
+    input.value = '';
+    return;
+  }
+
+  screenshotFile = file;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    screenshotB64 = e.target.result; // full data URL
+
+    // Show preview
+    document.getElementById('previewImg').src = screenshotB64;
+    document.getElementById('previewWrap').style.display = 'block';
+    document.getElementById('uploadOk').style.display = 'block';
+    document.getElementById('uploadZone').classList.add('has-img');
+    document.getElementById('uploadZone').querySelector('.upload-icon').textContent = '✅';
+
+    // Enable confirm button
+    document.getElementById('btnConfirm').disabled = false;
+    toast('📸 Screenshot attached!');
+  };
+  reader.readAsDataURL(file);
 }
-function fbCopy(){
-  var ta=document.createElement('textarea'); ta.value=UPI_ID;
-  ta.style.cssText='position:fixed;opacity:0;'; document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); toast('📋 UPI ID copied!'); }catch(e){ toast('UPI: '+UPI_ID); }
+
+function clearScreenshot() {
+  screenshotB64  = null;
+  screenshotFile = null;
+  document.getElementById('screenshotInput').value = '';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('uploadOk').style.display = 'none';
+  document.getElementById('uploadZone').classList.remove('has-img');
+  document.getElementById('uploadZone').querySelector('.upload-icon').textContent = '📷';
+  document.getElementById('btnConfirm').disabled = true;
+}
+
+/* ══════════════════════════════════════════════
+   CONFIRM ORDER — Screenshot path
+   (Firebase store + WhatsApp send)
+══════════════════════════════════════════════ */
+window.confirmOrder = async function() {
+  if (!order || !screenshotB64) {
+    toast('⚠️ Pehle payment screenshot attach karo!');
+    return;
+  }
+  if (orderSubmitted) {
+    toast('⚠️ Order already submitted!');
+    return;
+  }
+
+  var btn = document.getElementById('btnConfirm');
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting...';
+
+  try {
+    // ── 1. Firebase mein store karo (only order details, no image) ──
+    var orderPayload = {
+      orderId:    order.orderId,
+      name:       order.name,
+      phone:      order.phone,
+      address:    order.addr || 'Not provided',
+      items:      order.items,
+      subtotal:   order.subtotal,
+      delivery:   order.delivery.isFree ? 0 : (order.delivery.charge || 0),
+      grandTotal: order.grandTotal,
+      coupon:     order.couponCode || null,
+      discount:   order.couponDisc || 0,
+      status:     'paid_online',          // ← new column for online payment
+      paymentMode:'upi_screenshot',
+    };
+
+    var res = await fetch(API + '/submitOrder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderPayload)
+    });
+    var result = await res.json();
+    if (!result.success) throw new Error('Firebase store failed');
+
+    orderSubmitted = true;
+
+    // ── 2. WhatsApp pe order + screenshot send karo ──
+    sendWhatsApp();
+
+  } catch(e) {
+    console.error('confirmOrder error:', e);
+    toast('❌ Kuch error aaya, dobara try karo.');
+    btn.disabled = false;
+    btn.textContent = '✅ I\'ve Paid — Confirm Order';
+  }
+};
+
+function sendWhatsApp() {
+  // Text message build
+  var lines = [
+    '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
+    '💳 *Payment: UPI (Screenshot Attached)*',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🔖 *Order ID:* ' + order.orderId,
+    '👤 *Name:* ' + order.name,
+    '📞 *Phone:* ' + order.phone,
+  ];
+  if (order.addr) lines.push('📍 *Address:* ' + order.addr);
+  lines.push('', '🛒 *Items:*');
+  order.items.forEach(function(it) {
+    lines.push('  ' + it.emoji + ' ' + it.name + ' ×' + it.qty + ' → ₹' + (it.price * it.qty));
+  });
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('🛒 *Subtotal: ₹' + order.subtotal + '*');
+  if (order.couponDisc > 0) lines.push('🎟️ *Coupon (' + order.couponCode + '): −₹' + order.couponDisc + '*');
+  lines.push(order.delivery.isFree ? '🚚 *Delivery: FREE* 🎉' : '🚚 *Delivery: ₹' + order.delivery.charge + '*');
+  lines.push('💰 *Grand Total: ₹' + order.grandTotal + '*');
+  lines.push('', '📸 *Screenshot neeche attach hai — please verify & confirm!*');
+  lines.push('✅ Please confirm & prepare!');
+
+  var waUrl = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n'));
+  window.open(waUrl, '_blank');
+
+  // Cleanup session
+  try { sessionStorage.removeItem('aryanPayOrder'); } catch(e) {}
+
+  // Show success UI
+  postConfirmUI();
+}
+
+function postConfirmUI() {
+  // Disable confirm, show call button
+  var btn = document.getElementById('btnConfirm');
+  btn.textContent = '✅ Order Submitted!';
+  btn.disabled = true;
+  btn.style.background = 'linear-gradient(135deg,#4CAF50,#2e7d32)';
+
+  var callBtn = document.getElementById('btnCall');
+  callBtn.href = 'tel:' + PHONE;
+  callBtn.style.display = 'block';
+
+  document.getElementById('noteText').textContent = 'WhatsApp khul gaya! Screenshot wahan se manually send karo. Uske baad call karke confirm kar sakte ho.';
+
+  // Modal
+  document.getElementById('mSub').textContent =
+    'Order ID: ' + order.orderId + '\nWhatsApp pe order details gaye hain. Screenshot bhi wahan se bhejo. Shop ko call karke confirm kar sakte ho! 🙏';
+  document.getElementById('smodal').classList.add('open');
+}
+
+/* ══════════════════════════════════════════════
+   RAZORPAY SKELETON
+   ──────────────────────────────────────────────
+   Jab Razorpay integrate karna ho:
+   1. Razorpay account banao: https://razorpay.com
+   2. KYC complete karo (1-2 din)
+   3. Dashboard se Key ID lo
+   4. main.py mein /createRazorpayOrder endpoint add karo
+   5. Neeche key_id fill karo aur btnRazorpay show karo
+══════════════════════════════════════════════ */
+function initRazorpay() {
+  /* RAZORPAY INTEGRATION STEPS:
+
+  // Step 1: Backend se order create karo
+  var res = await fetch(API + '/createRazorpayOrder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: order.grandTotal * 100, orderId: order.orderId })
+  });
+  var rzpOrder = await res.json();
+
+  // Step 2: Razorpay checkout open karo
+  var options = {
+    key: 'rzp_live_XXXXXXXXXX',   // ← apni Key ID yahan daalo
+    amount: order.grandTotal * 100,
+    currency: 'INR',
+    name: CONFIG.shop.name_english,
+    description: 'Order ' + order.orderId,
+    order_id: rzpOrder.id,
+    prefill: { name: order.name, contact: order.phone },
+    theme: { color: '#F5C518' },
+    handler: function(response) {
+      // Step 3: Backend pe verify karo
+      verifyRazorpayPayment(response);
+    }
+  };
+  var rzp = new window.Razorpay(options);
+  rzp.open();
+  */
+
+  toast('⚠️ Razorpay abhi setup nahi hua. UPI use karo.');
+}
+
+/* RAZORPAY VERIFY SKELETON
+async function verifyRazorpayPayment(response) {
+  var res = await fetch(API + '/verifyPayment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      razorpay_order_id:   response.razorpay_order_id,
+      razorpay_payment_id: response.razorpay_payment_id,
+      razorpay_signature:  response.razorpay_signature,
+      orderId: order.orderId
+    })
+  });
+  var result = await res.json();
+  if (result.success) {
+    // Firebase me status: 'paid_razorpay' store hoga (backend karta hai)
+    sendWhatsApp();
+  } else {
+    toast('❌ Payment verification failed!');
+  }
+}
+*/
+
+/* ══════════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════════ */
+function copyUpi() {
+  try {
+    navigator.clipboard.writeText(UPI_ID)
+      .then(function() { toast('📋 UPI ID copied!'); })
+      .catch(fbCopy);
+  } catch(e) { fbCopy(); }
+}
+function fbCopy() {
+  var ta = document.createElement('textarea');
+  ta.value = UPI_ID; ta.style.cssText = 'position:fixed;opacity:0;';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); toast('📋 UPI ID copied!'); } catch(e) { toast('UPI: ' + UPI_ID); }
   document.body.removeChild(ta);
 }
 
-function confirmOrder(){
-  if(!order) return;
-  var lines=[
-    '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
-    '━━━━━━━━━━━━━━━━━━━━',
-    '🔖 *Order ID:* '+order.orderId,
-    '👤 *Name:* '+order.name,
-    '📞 *Phone:* '+order.phone
-  ];
-  if(order.addr) lines.push('📍 *Address:* '+order.addr);
-  lines.push('','🛒 *Items:*');
-  order.items.forEach(function(it){
-    lines.push('  '+it.emoji+' '+it.name+' ×'+it.qty+' → ₹'+(it.price*it.qty));
-  });
-  lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('🛒 *Subtotal: ₹'+order.subtotal+'*');
-  if(order.couponDisc>0) lines.push('🎟️ *Coupon ('+order.couponCode+'): −₹'+order.couponDisc+'*');
-  lines.push(order.delivery.isFree?'🚚 *Delivery: FREE* 🎉':'🚚 *Delivery: ₹'+order.delivery.charge+'*');
-  lines.push('💰 *Grand Total: ₹'+order.grandTotal+'*');
-  lines.push('💳 *Payment: UPI / Online*');
-  lines.push('✅ Please confirm & prepare!');
-
-  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
-  try{ sessionStorage.removeItem('aryanPayOrder'); }catch(e){}
-  showModal('🎉','Order Confirmed!','Thank you '+order.name+'! UPI payment recorded. We will confirm on '+order.phone+' shortly. 🙏');
-}
-
-function showModal(icon,title,sub){
-  document.getElementById('mIcon').textContent=icon;
-  document.getElementById('mTitle').textContent=title;
-  document.getElementById('mSub').textContent=sub;
-  document.getElementById('smodal').classList.add('open');
-}
-function goHome(){ window.location.href='index.html'; }
+function goHome() { window.location.href = 'index.html'; }
 
 var _t;
-function toast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(_t); _t=setTimeout(function(){ el.classList.remove('show'); },3000);
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_t); _t = setTimeout(function() { el.classList.remove('show'); }, 3000);
 }
 </script>
 </body>
