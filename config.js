@@ -49,7 +49,7 @@ api: {
      4. DELIVERY SETTINGS
      ───────────────────────────────────────── */
   delivery: {
-    charge:    10,
+    charge:    15,
     free_above:200,
     range_km:  10,
     shop_lat:  25.9464852,
