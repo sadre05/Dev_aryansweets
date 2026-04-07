@@ -41,8 +41,8 @@ var CONFIG = {
      Cloud Function deploy karne ke baad woh URL yahan daalo.
      Example: 'https://us-central1-gold-setup-474311-h5.cloudfunctions.net/aryanApi'
      ───────────────────────────────────────── */
-  api: {
-  base_url: 'https://us-central1-gold-setup-474311-h5.cloudfunctions.net/aryanApi',
+api: {
+  base_url: 'https://us-central1-aryansweets.cloudfunctions.net/aryanApi',
 },
 
   /* ─────────────────────────────────────────
