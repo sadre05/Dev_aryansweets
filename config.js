@@ -42,8 +42,8 @@ var CONFIG = {
      Example: 'https://us-central1-gold-setup-474311-h5.cloudfunctions.net/aryanApi'
      ───────────────────────────────────────── */
   api: {
-    base_url: 'https://us-central1-gold-setup-474311-h5.cloudfunctions.net/aryanApi',
-  },
+  base_url: 'https://us-central1-gold-setup-474311-h5.cloudfunctions.net/aryanApi',
+},
 
   /* ─────────────────────────────────────────
      4. DELIVERY SETTINGS
