@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — श्री आर्यन स्वीट्स</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --gold:#F5C518;--gold-light:#FFD84D;--gold-dark:#C9960C;
+  --dark:#0D0D00;--dark2:#161600;--dark3:#1F1F00;--dark4:#0A0A00;
+  --cream:#FFF8DC;--cream2:#FFF3C4;--muted:#A89B5E;
+  --green:#4CAF50;--red:#E53935;--orange:#FF8A65;--blue:#42A5F5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--cream);min-height:100vh;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--dark2);}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px;}
+
+/* ── LOGIN ── */
+#loginScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 30% 50%,rgba(245,197,24,0.08),transparent 60%),var(--dark);
+}
+.login-box{
+  background:var(--dark2);border:1px solid rgba(245,197,24,0.2);
+  border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--gold);text-align:center;margin-bottom:0.3rem;}
+.login-logo span{color:var(--cream);font-style:italic;}
+.login-sub{text-align:center;font-size:0.78rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2rem;}
+.login-field{margin-bottom:1rem;}
+.login-field label{display:block;font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.login-field input{
+  width:100%;background:var(--dark3);border:1px solid rgba(245,197,24,0.18);
+  color:var(--cream);padding:12px 15px;border-radius:8px;
+  font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;transition:0.25s;
+}
+.login-field input:focus{border-color:var(--gold);}
+.login-btn{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:var(--dark);border:none;padding:13px;border-radius:8px;
+  font-weight:700;font-size:0.95rem;cursor:pointer;margin-top:0.5rem;
+  text-transform:uppercase;letter-spacing:0.5px;transition:0.25s;
+}
+.login-btn:hover{opacity:0.9;transform:translateY(-1px);}
+.login-err{color:#ef9a9a;font-size:0.8rem;text-align:center;margin-top:0.7rem;display:none;}
+
+/* ── DASHBOARD ── */
+#dashboard{display:none;}
+.topbar{
+  background:rgba(13,13,0,0.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(245,197,24,0.18);
+  padding:0 2rem;height:64px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+}
+.tb-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
+.tb-logo span{color:var(--cream);font-style:italic;}
+.tb-right{display:flex;align-items:center;gap:1rem;}
+.tb-badge{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:5px 14px;border-radius:50px;font-size:0.75rem;font-weight:600;}
+.logout-btn{background:transparent;border:1px solid rgba(229,57,53,0.4);color:#ef9a9a;padding:7px 16px;border-radius:6px;font-size:0.78rem;cursor:pointer;font-family:'Outfit',sans-serif;transition:0.2s;}
+.logout-btn:hover{background:rgba(229,57,53,0.1);}
+
+.main{padding:1.5rem 2rem;max-width:1400px;margin:0 auto;}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-card{
+  background:var(--dark2);border:1px solid rgba(245,197,24,0.12);
+  border-radius:12px;padding:1.2rem 1.4rem;transition:0.25s;
+}
+.stat-card:hover{border-color:rgba(245,197,24,0.3);transform:translateY(-2px);}
+.stat-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;display:flex;align-items:center;gap:6px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;}
+.stat-sub{font-size:0.74rem;color:var(--muted);margin-top:4px;}
+
+/* ── FILTERS ── */
+.filter-bar{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center;}
+.f-btn{background:transparent;border:1px solid rgba(245,197,24,0.22);color:var(--muted);padding:7px 16px;border-radius:50px;font-size:0.8rem;cursor:pointer;transition:0.2s;font-family:'Outfit',sans-serif;}
+.f-btn.active,.f-btn:hover{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:700;}
+.refresh-btn{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:7px 16px;border-radius:50px;font-size:0.8rem;cursor:pointer;font-family:'Outfit',sans-serif;margin-left:auto;transition:0.2s;}
+.refresh-btn:hover{background:rgba(245,197,24,0.2);}
+
+/* ── ORDERS TABLE ── */
+.orders-wrap{background:var(--dark2);border:1px solid rgba(245,197,24,0.12);border-radius:14px;overflow:hidden;}
+.orders-head{padding:1rem 1.4rem;border-bottom:1px solid rgba(245,197,24,0.1);display:flex;align-items:center;justify-content:space-between;}
+.orders-head h2{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);}
+.order-count{font-size:0.78rem;color:var(--muted);}
+
+.order-card{
+  border-bottom:1px solid rgba(245,197,24,0.07);
+  padding:1rem 1.4rem;transition:0.2s;
+}
+.order-card:last-child{border-bottom:none;}
+.order-card:hover{background:rgba(245,197,24,0.03);}
+.oc-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;}
+.oc-id{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);}
+.oc-time{font-size:0.73rem;color:var(--muted);}
+.oc-info{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.6rem;}
+.oc-field{font-size:0.82rem;}
+.oc-field .lbl{color:var(--muted);font-size:0.72rem;display:block;margin-bottom:2px;}
+.oc-items{font-size:0.8rem;color:var(--cream2);margin-bottom:0.7rem;line-height:1.7;}
+.oc-total{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--gold);}
+
+/* Status badge */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:50px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.status-pending{background:rgba(255,138,101,0.12);color:var(--orange);border:1px solid rgba(255,138,101,0.3);}
+.status-confirmed{background:rgba(76,175,80,0.12);color:var(--green);border:1px solid rgba(76,175,80,0.3);}
+.status-rejected{background:rgba(229,57,53,0.12);color:#ef9a9a;border:1px solid rgba(229,57,53,0.3);}
+
+/* Action buttons */
+.oc-actions{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.7rem;}
+.act-btn{border:none;padding:8px 16px;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:0.2s;display:flex;align-items:center;gap:5px;}
+.btn-confirm{background:rgba(76,175,80,0.15);color:var(--green);border:1px solid rgba(76,175,80,0.35);}
+.btn-confirm:hover{background:rgba(76,175,80,0.3);}
+.btn-reject{background:rgba(229,57,53,0.12);color:#ef9a9a;border:1px solid rgba(229,57,53,0.3);}
+.btn-reject:hover{background:rgba(229,57,53,0.25);}
+.btn-call{background:rgba(66,165,245,0.12);color:var(--blue);border:1px solid rgba(66,165,245,0.3);}
+.btn-call:hover{background:rgba(66,165,245,0.25);}
+.btn-print{background:rgba(245,197,24,0.1);color:var(--gold);border:1px solid rgba(245,197,24,0.3);}
+.btn-print:hover{background:rgba(245,197,24,0.2);}
+
+.empty-orders{text-align:center;padding:4rem;color:var(--muted);}
+.empty-orders .ei{font-size:3.5rem;margin-bottom:1rem;}
+
+.loading{text-align:center;padding:3rem;color:var(--muted);}
+.spin{display:inline-block;width:28px;height:28px;border:3px solid rgba(245,197,24,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.75s linear infinite;margin-bottom:0.8rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--dark);padding:11px 24px;border-radius:50px;font-weight:600;font-size:0.86rem;z-index:9999;transition:0.38s;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── PRINT MODAL ── */
+.pmodal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;}
+.pmodal.open{display:flex;}
+.pmodal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);}
+.pmodal-box{
+  position:relative;z-index:1;background:var(--dark2);
+  border:1px solid rgba(245,197,24,0.25);border-radius:16px;
+  padding:1.8rem;width:92%;max-width:480px;max-height:90vh;overflow-y:auto;
+}
+.pmodal-close{position:absolute;top:1rem;right:1rem;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:var(--cream);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+
+/* ── PRINT SLIP (actual printable area) ── */
+@media print{
+  body *{visibility:hidden !important;}
+  #printSlip, #printSlip *{visibility:visible !important;}
+  #printSlip{
+    position:fixed !important;inset:0 !important;
+    background:#fff !important;color:#000 !important;
+    padding:20px !important;font-family:'Outfit',sans-serif !important;
+    display:block !important;
+  }
+}
+#printSlip{display:none;}
+.slip{background:#fff;color:#111;padding:24px;border-radius:8px;font-family:'Outfit',sans-serif;}
+.slip-logo{text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:#C9960C;margin-bottom:2px;}
+.slip-sub{text-align:center;font-size:0.72rem;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.slip-divider{border:none;border-top:1px dashed #ccc;margin:10px 0;}
+.slip-row{display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px;color:#333;}
+.slip-row .sl{color:#888;}
+.slip-items{margin:10px 0;}
+.slip-item{display:flex;justify-content:space-between;font-size:0.82rem;padding:4px 0;border-bottom:1px solid #f0f0f0;color:#333;}
+.slip-total-row{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:#111;padding-top:8px;}
+.slip-status{text-align:center;margin-top:10px;font-size:0.78rem;font-weight:700;padding:5px;border-radius:4px;}
+.slip-status.cod{background:#fff3e0;color:#e65100;}
+.slip-status.upi{background:#e8f5e9;color:#2e7d32;}
+.slip-qr-wrap{display:flex;flex-direction:column;align-items:center;margin-top:14px;padding-top:14px;border-top:1px dashed #ccc;}
+.slip-qr-label{font-size:0.75rem;color:#888;margin-bottom:8px;text-align:center;}
+.slip-amt{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:#C9960C;text-align:center;margin-top:6px;}
+.slip-footer{text-align:center;font-size:0.7rem;color:#aaa;margin-top:14px;}
+
+/* Responsive */
+@media(max-width:600px){
+  .main{padding:1rem;}
+  .topbar{padding:0 1rem;}
+  .oc-info{gap:0.8rem;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">श्री आर्यन <span>स्वीट्स</span></div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="Enter username" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Login</button>
+    <div class="login-err" id="loginErr">❌ Invalid username or password</div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="tb-logo">श्री आर्यन <span>स्वीट्स</span> <span style="font-size:0.75rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:400;"> — Admin</span></div>
+    <div class="tb-right">
+      <div class="tb-badge" id="liveCount">🔴 Live</div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">📦 Today's Orders</div>
+        <div class="stat-val" id="statTodayCount">—</div>
+        <div class="stat-sub">Orders placed today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">💰 Today's Revenue</div>
+        <div class="stat-val" id="statTodayRev">—</div>
+        <div class="stat-sub">Total amount today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📅 Monthly Orders</div>
+        <div class="stat-val" id="statMonthCount">—</div>
+        <div class="stat-sub" id="statMonthLabel">This month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">💵 Monthly Revenue</div>
+        <div class="stat-val" id="statMonthRev">—</div>
+        <div class="stat-sub">Total amount this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">✅ Confirmed</div>
+        <div class="stat-val" id="statConfirmed">—</div>
+        <div class="stat-sub">All time confirmed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">⏳ Pending</div>
+        <div class="stat-val" id="statPending" style="color:var(--orange)">—</div>
+        <div class="stat-sub">Awaiting action</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📊 Total Business</div>
+        <div class="stat-val" id="statTotalBusiness" style="color:#a78bfa">—</div>
+        <div class="stat-sub">All orders grand total</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <button class="f-btn active" onclick="filterOrders('all',this)">All</button>
+      <button class="f-btn" onclick="filterOrders('pending',this)">⏳ Pending</button>
+      <button class="f-btn" onclick="filterOrders('confirmed',this)">✅ Confirmed</button>
+      <button class="f-btn" onclick="filterOrders('rejected',this)">❌ Rejected</button>
+      <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-wrap">
+      <div class="orders-head">
+        <h2>📋 Orders</h2>
+        <span class="order-count" id="orderCountLabel">Loading...</span>
+      </div>
+      <div id="ordersList">
+        <div class="loading"><div class="spin"></div><br>Loading orders...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Print Modal -->
+<div class="pmodal" id="printModal">
+  <div class="pmodal-bg" onclick="closePrint()"></div>
+  <div class="pmodal-box">
+    <button class="pmodal-close" onclick="closePrint()">✕</button>
+    <div id="printPreview"></div>
+    <button class="login-btn" style="margin-top:1rem;" onclick="doPrint()">🖨️ Print Slip</button>
+  </div>
+</div>
+
+<!-- Hidden printable area -->
+<div id="printSlip"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   ADMIN PANEL — Secure API Version
+   Firebase SDK removed. Saab Cloud Function ke through.
+   ══════════════════════════════════════════════════ */
+
+const API = window.CONFIG.api.base_url;
+const UPI_ID   = window.CONFIG.contact.upi_id;
+const UPI_NAME = window.CONFIG.shop.name_english;
+
+let allOrders    = [];
+let currentFilter = 'all';
+let adminToken   = null;  // JWT token — login ke baad set hoga
+
+// ── LOGIN ──
+window.doLogin = async function() {
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass').value.trim();
+  try {
+    var res = await fetch(API + '/adminLogin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    var data = await res.json();
+    if (data.success && data.token) {
+      adminToken = data.token;
+      sessionStorage.setItem('aryanAdminToken', adminToken);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display   = 'block';
+      loadOrders();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+      setTimeout(function(){ document.getElementById('loginErr').style.display='none'; }, 3000);
+    }
+  } catch(e) {
+    console.error('Login error:', e);
+    document.getElementById('loginErr').style.display = 'block';
+  }
+};
+
+window.doLogout = function() {
+  adminToken = null;
+  sessionStorage.removeItem('aryanAdminToken');
+  document.getElementById('dashboard').style.display   = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+};
+
+// ── Auto-restore session if token exists ──
+(function() {
+  var saved = sessionStorage.getItem('aryanAdminToken');
+  if (saved) {
+    adminToken = saved;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display   = 'block';
+    loadOrders();
+  }
+})();
+
+// ── LOAD ORDERS ──
+window.loadOrders = async function() {
+  document.getElementById('ordersList').innerHTML = '<div class="loading"><div class="spin"></div><br>Loading orders...</div>';
+  try {
+    var res = await fetch(API + '/getOrders', {
+      headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    if (res.status === 401) {
+      toast('⚠️ Session expired. Please login again.');
+      doLogout(); return;
+    }
+    var data = await res.json();
+    allOrders = data.orders || [];
+    calcStats();
+    renderOrders();
+    toast('✅ Orders loaded!');
+  } catch(e) {
+    console.error(e);
+    document.getElementById('ordersList').innerHTML = '<div class="empty-orders"><div class="ei">⚠️</div><p>Error loading orders. Network issue ya Cloud Function down hai.</p></div>';
+  }
+};
+
+// ── CALC STATS ──
+function calcStats() {
+  var now   = new Date();
+  var today = now.toDateString();
+  var month = now.getMonth();
+  var year  = now.getFullYear();
+
+  var todayCount=0, todayConfRev=0, monthCount=0, monthConfRev=0, confirmed=0, pending=0, totalBusiness=0;
+
+  allOrders.forEach(function(o) {
+    var t = o.time ? new Date(o.time) : null;
+    var amt = Number(o.grandTotal || o.subtotal || 0);
+    totalBusiness += amt;
+    if (t && t.toDateString() === today) { todayCount++; }
+    if (t && t.getMonth() === month && t.getFullYear() === year) { monthCount++; }
+    if (o.status === 'confirmed') {
+      confirmed++;
+      if (t && t.toDateString() === today) todayConfRev += amt;
+      if (t && t.getMonth() === month && t.getFullYear() === year) monthConfRev += amt;
+    }
+    if (o.status === 'pending') pending++;
+  });
+
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('statTodayCount').textContent  = todayCount;
+  document.getElementById('statTodayRev').textContent    = '₹' + todayConfRev;
+  document.getElementById('statMonthCount').textContent  = monthCount;
+  document.getElementById('statMonthRev').textContent    = '₹' + monthConfRev;
+  document.getElementById('statConfirmed').textContent   = confirmed;
+  document.getElementById('statPending').textContent     = pending;
+  document.getElementById('statMonthLabel').textContent  = monthNames[month] + ' ' + year;
+  document.getElementById('liveCount').textContent       = '🟢 ' + allOrders.length + ' Orders';
+  document.getElementById('statTotalBusiness').textContent = '₹' + totalBusiness;
+}
+
+// ── FILTER ──
+window.filterOrders = function(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderOrders();
+};
+
+// ── RENDER ORDERS ──
+function renderOrders() {
+  var filtered = currentFilter === 'all' ? allOrders : allOrders.filter(function(o){ return o.status === currentFilter; });
+  document.getElementById('orderCountLabel').textContent = filtered.length + ' order(s)';
+
+  if (!filtered.length) {
+    document.getElementById('ordersList').innerHTML = '<div class="empty-orders"><div class="ei">📭</div><p>No orders found.</p></div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(o) {
+    var timeStr = o.time ? new Date(o.time).toLocaleString('en-IN', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    var statusCls = 'status-' + (o.status || 'pending');
+    var statusEmoji = o.status === 'confirmed' ? '✅' : o.status === 'rejected' ? '❌' : '⏳';
+    var itemsStr = (o.items||[]).map(function(it){ return (it.name||'?') + ' ×' + (it.qty||1); }).join(', ');
+
+    var actionBtns = '';
+    if (o.status === 'pending') {
+      actionBtns += '<button class="act-btn btn-confirm" onclick="updateStatus(\''+o.id+'\',\'confirmed\')">✅ Confirm Order</button>';
+      actionBtns += '<button class="act-btn btn-reject"  onclick="updateStatus(\''+o.id+'\',\'rejected\')">❌ Reject Order</button>';
+    } else if (o.status === 'confirmed') {
+      actionBtns += '<button class="act-btn btn-reject"  onclick="updateStatus(\''+o.id+'\',\'rejected\')">❌ Reject</button>';
+    } else {
+      actionBtns += '<button class="act-btn btn-confirm" onclick="updateStatus(\''+o.id+'\',\'confirmed\')">✅ Re-confirm</button>';
+    }
+    if (o.phone) {
+      actionBtns += '<a class="act-btn btn-call" href="tel:'+o.phone+'">📞 Call Customer</a>';
+    }
+    actionBtns += '<button class="act-btn btn-print" onclick="showPrint(\''+o.id+'\')">🖨️ Print Slip</button>';
+
+    html += `
+    <div class="order-card" id="card-${o.id}">
+      <div class="oc-top">
+        <div>
+          <span class="oc-id">${o.orderId || o.id.slice(0,8)}</span>
+          <span class="oc-time" style="margin-left:10px;">${timeStr}</span>
+        </div>
+        <span class="status-badge ${statusCls}">${statusEmoji} ${(o.status||'pending').toUpperCase()}</span>
+      </div>
+      <div class="oc-info">
+        <div class="oc-field"><span class="lbl">👤 Customer</span>${o.name||'—'}</div>
+        <div class="oc-field"><span class="lbl">📞 Phone</span>${o.phone||'—'}</div>
+        <div class="oc-field"><span class="lbl">📍 Address</span>${o.address||o.addr||'—'}</div>
+      </div>
+      <div class="oc-items">🛒 ${itemsStr}</div>
+      <div class="oc-top">
+        <span class="oc-total">₹${o.grandTotal||o.subtotal||0}</span>
+        <span style="font-size:0.78rem;color:var(--muted);">Delivery: ₹${o.delivery||0} | Subtotal: ₹${o.subtotal||0}</span>
+      </div>
+      <div class="oc-actions">${actionBtns}</div>
+    </div>`;
+  });
+
+  document.getElementById('ordersList').innerHTML = html;
+}
+
+// ── UPDATE STATUS ──
+window.updateStatus = async function(id, status) {
+  try {
+    var res = await fetch(API + '/updateOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + adminToken
+      },
+      body: JSON.stringify({ id: id, status: status })
+    });
+    if (res.status === 401) { toast('⚠️ Session expired'); doLogout(); return; }
+    var data = await res.json();
+    if (data.success) {
+      var idx = allOrders.findIndex(function(o){ return o.id === id; });
+      if (idx !== -1) allOrders[idx].status = status;
+      calcStats();
+      renderOrders();
+      toast(status === 'confirmed' ? '✅ Order Confirmed!' : '❌ Order Rejected!');
+    }
+  } catch(e) {
+    toast('⚠️ Error updating order');
+    console.error(e);
+  }
+};
+
+// ── PRINT SLIP ──
+window.showPrint = function(id) {
+  var o = allOrders.find(function(x){ return x.id === id; });
+  if (!o) return;
+
+  var isCOD = !o.paymentMethod || o.paymentMethod === 'COD' || (o.status && !o.upi);
+  var timeStr = o.time ? new Date(o.time).toLocaleString('en-IN') : '—';
+  var itemsHtml = (o.items||[]).map(function(it){
+    return '<div class="slip-item"><span>'+(it.name||'?')+' ×'+(it.qty||1)+'</span><span>₹'+((it.price||0)*(it.qty||1))+'</span></div>';
+  }).join('');
+
+  var qrSection = '';
+  if (isCOD) {
+    var upiLink = 'upi://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+(o.grandTotal||0)+'&cu=INR&tn='+encodeURIComponent('Order '+(o.orderId||''));
+    qrSection = `
+      <div class="slip-qr-wrap">
+        <div class="slip-qr-label">💳 Scan to Pay via UPI (Optional)</div>
+        <div id="slipQR"></div>
+        <div class="slip-amt">₹${o.grandTotal||0}</div>
+        <div style="font-size:0.72rem;color:#888;margin-top:4px;">${UPI_ID}</div>
+      </div>`;
+  }
+
+  var slipHtml = `
+  <div class="slip">
+    <div class="slip-logo">श्री आर्यन स्वीट्स</div>
+    <div class="slip-sub">Order Receipt</div>
+    <hr class="slip-divider">
+    <div class="slip-row"><span class="sl">Order ID</span><span><b>${o.orderId||o.id.slice(0,8)}</b></span></div>
+    <div class="slip-row"><span class="sl">Date</span><span>${timeStr}</span></div>
+    <div class="slip-row"><span class="sl">Customer</span><span>${o.name||'—'}</span></div>
+    <div class="slip-row"><span class="sl">Phone</span><span>${o.phone||'—'}</span></div>
+    <div class="slip-row"><span class="sl">Address</span><span>${o.address||o.addr||'—'}</span></div>
+    <hr class="slip-divider">
+    <div class="slip-items">${itemsHtml}</div>
+    <hr class="slip-divider">
+    <div class="slip-row"><span class="sl">Subtotal</span><span>₹${o.subtotal||0}</span></div>
+    ${(o.discount>0)?'<div class="slip-row"><span class="sl">Discount</span><span>−₹'+o.discount+'</span></div>':''}
+    <div class="slip-row"><span class="sl">Delivery</span><span>₹${o.delivery||0}</span></div>
+    <div class="slip-total-row"><span>Grand Total</span><span>₹${o.grandTotal||0}</span></div>
+    <div class="slip-status ${isCOD?'cod':'upi'}">${isCOD?'🚚 CASH ON DELIVERY':'💳 UPI / ONLINE PAID'}</div>
+    ${qrSection}
+    <div class="slip-footer">Thank you for your order! 🙏<br>श्री आर्यन स्वीट्स — Authentic Flavours</div>
+  </div>`;
+
+  document.getElementById('printPreview').innerHTML = slipHtml;
+  document.getElementById('printModal').classList.add('open');
+
+  if (isCOD) {
+    setTimeout(function() {
+      var el = document.getElementById('slipQR');
+      if (el) {
+        el.innerHTML = '';
+        new QRCode(el, {
+          text: 'upi://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+(o.grandTotal||0)+'&cu=INR',
+          width: 140, height: 140,
+          colorDark: '#000000', colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }, 200);
+  }
+
+  setTimeout(function(){
+    document.getElementById('printSlip').innerHTML = slipHtml;
+    if (isCOD) {
+      var el2 = document.getElementById('printSlip').querySelector('#slipQR');
+      if (el2) {
+        el2.innerHTML='';
+        new QRCode(el2, {
+          text: 'upi://pay?pa='+encodeURIComponent(UPI_ID)+'&pn='+encodeURIComponent(UPI_NAME)+'&am='+(o.grandTotal||0)+'&cu=INR',
+          width:140,height:140,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M
+        });
+      }
+    }
+  }, 250);
+};
+
+window.closePrint = function() {
+  document.getElementById('printModal').classList.remove('open');
+};
+
+window.doPrint = function() {
+  document.getElementById('printSlip').style.display = 'block';
+  window.print();
+  setTimeout(function(){ document.getElementById('printSlip').style.display='none'; }, 1000);
+};
+
+// ── TOAST ──
+var _tt;
+window.toast = function(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_tt); _tt = setTimeout(function(){ el.classList.remove('show'); }, 3000);
+};
+
+</script>
+
+
+</body>
+</html>

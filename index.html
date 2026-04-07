@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>श्री आर्यन स्वीट्स — Authentic North/South Indian Flavours</title>
+<script src="config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -737,7 +738,7 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
       <div class="con-item"><div class="con-icon">📍</div><div><div class="con-lbl">Address</div><div class="con-val">SH 88, Baheri Bazar, Baheri,<br>Darbhanga, Bihar — 847105</div></div></div>
       <div class="con-item"><div class="con-icon">📞</div><div><div class="con-lbl">Phone_1</div><div class="con-val"><a href="tel:+919570890652">+91 9570890652</a></div></div></div>
       <div class="con-item"><div class="con-icon">📞</div><div><div class="con-lbl">Phone_2</div><div class="con-val"><a href="tel:+917992329377">+91 79923 29377</a></div></div></div>
-      <div class="con-item"><div class="con-icon">📧</div><div><div class="con-lbl">Email</div><div class="con-val"><a href="mailto:aryansweets@gmail.com">aryansweets@gmail.com</a></div></div></div>
+      <div class="con-item"><div class="con-icon">📧</div><div><div class="con-lbl">Email</div><div class="con-val"><a href="/cdn-cgi/l/email-protection#e382919a828d909486869790a3848e828a8fcd808c8e"><span class="__cf_email__" data-cfemail="0766757e666974706262737447606a666e6b2964686a">[email&#160;protected]</span></a></div></div></div>
       <div class="con-item"><div class="con-icon">🕐</div><div><div class="con-lbl">Opening Hours</div><div class="con-val"><table class="hours-tbl"><tr><td>Mon – Fri</td><td>7:00 AM – 10:00 PM</td></tr><tr><td>Saturday</td><td>7:00 AM – 11:00 PM</td></tr><tr><td>Sunday</td><td>7:00 AM – 9:00 PM</td></tr></table></div></div></div>
     </div>
     <div class="map-box">
@@ -775,8 +776,60 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
   </div>
   <div class="foot-bot">
     <span>© 2026 श्री आर्यन & धनराज स्वीट्स. All rights reserved.</span>
+    <a href="Admin.html" class="admin-ghost-btn" title="Admin">⚙</a>
   </div>
 </footer>
+<style>
+.admin-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.12);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+  vertical-align: middle;
+  user-select: none;
+}
+.admin-ghost-btn:hover {
+  color: var(--gold);
+  border-color: rgba(245,197,24,0.35);
+  background: rgba(245,197,24,0.06);
+}
+
+.scroll-top-btn {
+  position: fixed;
+  right: 18px;
+  bottom: 90px;
+  width: 42px;
+  height: 42px;
+  background: rgba(245,197,24,0.12);
+  border: 1px solid rgba(245,197,24,0.3);
+  color: var(--gold);
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 8888;
+  transition: background 0.2s, transform 0.2s;
+}
+.scroll-top-btn:hover {
+  background: rgba(245,197,24,0.22);
+  transform: translateY(-2px);
+}
+
+</style>
+
+
 
 <!-- CART FAB -->
 <div class="float-cart"><button class="cart-fab" onclick="toggleCart()">🛒<span class="cart-badge" id="cartBadge">0</span></button></div>
@@ -906,7 +959,7 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
     <button class="smodal-close" onclick="closeModal()">Great, Thanks!</button>
   </div>
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ══ QR LIBRARY LOAD ══ */
 (function(){
   var s=document.createElement('script');
@@ -917,12 +970,12 @@ footer{background:var(--dark2);border-top:1px solid rgba(245,197,24,0.1);padding
 /* ══ VALIDATE FORM — returns order object or null ══ */
 function validateAndBuildOrder() {
   if (!cart.length) { toast('🛒 Please add items first!'); return null; }
-  if (!locChecked) {
-    toast('📍 Please verify your delivery location first!');
-    var w=document.getElementById('locCheckWrap');
-    if(w) w.scrollIntoView({behavior:'smooth',block:'center'});
-    return null;
-  }
+  // if (!locChecked) {
+  //   toast('📍 Please verify your delivery location or PIN code first!');
+  //   var wrap = document.getElementById('locCheckWrap');
+  //   if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   return;
+  // }
   var name=document.getElementById('oName').value.trim();
   var phone=document.getElementById('oPhone').value.trim();
   var addr=document.getElementById('oAddr').value.trim();
@@ -983,6 +1036,30 @@ function btnCOD() {
   lines.push(e10+' *Payment: '+e8+' Cash on Delivery*');
   lines.push(e11+' Please confirm & prepare!');
 
+  // ── Firebase mein save karo — cart clear hone SE PEHLE ──
+  var firebaseOrder = {
+    orderId:    o.orderId,
+    name:       o.name,
+    phone:      o.phone,
+    address:    o.addr || 'Not provided',
+    items:      cart.map(function(c){ return {name:c.name, price:c.price, qty:c.qty}; }),
+    subtotal:   o.subtotal,
+    delivery:   o.delivery.charge,
+    grandTotal: o.grandTotal,
+    coupon:     o.couponCode || null,
+    discount:   o.couponDisc || 0,
+    status:     'pending',
+    time:       new Date().toString()
+  };
+  // ── Secure API call — Firebase directly nahi, Cloud Function ke through ──
+  fetch(CONFIG.api.base_url + '/submitOrder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(firebaseOrder)
+  }).then(function(r){ return r.json(); })
+    .then(function(d){ if(d.success) console.log('✅ Order saved!'); })
+    .catch(function(e){ console.error('❌ API error:', e); });
+
   window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
 
   cart=[];appliedCoupon=null;locChecked=false;
@@ -1003,12 +1080,12 @@ function btnPayNow() {
 /* ═══════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════ */
-var WHATSAPP_NUMBER = '917992329377';
-var DELIVERY_THRESHOLD = 200;
-var DELIVERY_CHARGE = 10;
-var DELIVERY_RANGE_KM = 10;
-var SHOP_LAT = 25.9464852;
-var SHOP_LNG = 86.0480939;
+var WHATSAPP_NUMBER = CONFIG.contact.whatsapp;
+var DELIVERY_THRESHOLD = CONFIG.delivery.free_above;
+var DELIVERY_CHARGE = CONFIG.delivery.charge;
+var DELIVERY_RANGE_KM = CONFIG.delivery.range_km;
+var SHOP_LAT = CONFIG.delivery.shop_lat;
+var SHOP_LNG = CONFIG.delivery.shop_lng;
 
 /* ═══════════════════════════════════════════
    COUPON SYSTEM
@@ -1023,12 +1100,7 @@ var SHOP_LNG = 86.0480939;
 ═══════════════════════════════════════════ */
 
 /* Coupon prefix pool — 20 friendly prefixes */
-var COUPON_PREFIXES = [
-  'ARYAN','SWEET','DOSA','IDLI','CHAI',
-  'MITHI','LUCKY','TASTY','YUMMY','FRESH',
-  'DHANU','SPICE','DELHI','BIHAR','GOLD',
-  'HAPPY','FEAST','TREAT','ENJOY','SAVOUR'
-];
+var COUPON_PREFIXES = CONFIG.coupons.prefixes;
 
 /* Generate or retrieve session coupon */
 var sessionCoupon = null; // { code, discount }
@@ -1047,7 +1119,7 @@ function getOrCreateCoupon() {
   var prefix = COUPON_PREFIXES[Math.floor(Math.random() * COUPON_PREFIXES.length)];
   var num    = Math.floor(Math.random() * 900 + 100); // 3-digit number
   var code   = prefix + num;
-  var disc   = Math.floor(Math.random() * 10) + 1;   // ₹1 – ₹10
+  var disc   = Math.floor(Math.random() * (CONFIG.coupons.max_discount - CONFIG.coupons.min_discount + 1)) + CONFIG.coupons.min_discount;
 
   sessionCoupon = { code: code, discount: disc };
 
@@ -1344,17 +1416,7 @@ function doGpsRequest() {
 /* ═══════════════════════════════════════════
    PIN CODE CHECK — always available
 ═══════════════════════════════════════════ */
-var DELIVERY_PINS = [
-  '847105','847101','847102','847103','847104',
-  '847106','847107','847108','847115','847116',
-  '847203','847204','847211','847212','847213',
-  '847214','847121','847122','847123','847124',
-  '847228','847301','847302','847337',
-  '847401','847402','847403','847404','847405',
-  '847411','847421','847422','847423','847424',
-  '847425','847426','847427','847428','847429',
-  '842001','842002','842003'
-];
+var DELIVERY_PINS = CONFIG.delivery.pins;
 
 function checkByPin() {
   var pin = (document.getElementById('manualPin').value || '').toString().trim();
@@ -1403,76 +1465,8 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ═══════════════════════════════════════════
    MENU DATA
 ═══════════════════════════════════════════ */
-var MENU = [
-// Breakfast
-  {id:'d1',  name:'Chole Bhature',       emoji:'🥟', cat:'breakfast', price:50,  unit:'Per plate (2 pcs)',  desc:'Fluffy bhature with spiced chole. A hearty North-Indian favourite.',            img:'images/breakfast/Chole_Bhature.jpg'},
-  {id:'d2',  name:'Dosa',                emoji:'🍚', cat:'breakfast', price:50,  unit:'Per plate',          desc:'Classic thin crispy rice & lentil crepe with sambar & chutney.',                img:'images/breakfast/dosa.webp'},
-  {id:'d3',  name:'Paper Dosa',          emoji:'🥞', cat:'breakfast', price:50,  unit:'Per plate',          desc:'Extra-thin, extra-crispy version of the classic dosa.',                         img:'images/breakfast/Paper_dosa.webp'},
-  {id:'d4',  name:'Masala Dosa',         emoji:'🫔', cat:'breakfast', price:60,  unit:'Per plate',          desc:'Crispy golden dosa stuffed with spiced potato masala filling.',                  img:'images/breakfast/Masala_dosa.webp'},
-  {id:'d5',  name:'Paneer Masala Dosa',  emoji:'🧈', cat:'breakfast', price:80,  unit:'Per plate',          desc:'Dosa stuffed with rich paneer masala. A deluxe classic.',                       img:'images/breakfast/Paneer_Masala.webp'},
-  {id:'d6',  name:'Manchurian',          emoji:'🍪', cat:'breakfast', price:30,  unit:'Per bowl',           desc:'Crispy veggie balls tossed in tangy Manchurian sauce.',                         img:'images/breakfast/Manchurian.jpg'},
-  {id:'d7',  name:'Paneer Manchurian',   emoji:'🍩', cat:'breakfast', price:50,  unit:'Per bowl',           desc:'Soft paneer cubes in spicy Indo-Chinese Manchurian gravy.',                     img:'images/breakfast/Paneer_Manchurian.webp'},
-  {id:'d8',  name:'Paneer Chilli',       emoji:'🍕', cat:'breakfast', price:80,  unit:'Per bowl',           desc:'Crispy paneer tossed with bell peppers in a chilli sauce.',                     img:'images/breakfast/Paneer_Chilli.jpg'},
-  {id:'d9',  name:'Pizza',               emoji:'🍕', cat:'breakfast', price:50,  unit:'Per slice',          desc:'Topped with onion, tomato, green chilli & coriander.',                          img:'images/breakfast/pizza.jpg'},
-  {id:'d10', name:'Paneer Pizza',        emoji:'🍕', cat:'breakfast', price:80,  unit:'Per slice',          desc:'Loaded with fresh paneer, veggies & mozzarella.',                               img:'images/breakfast/paneer_pizza.webp'},
-// Sweets
-  {id:'s1',  name:'Kaju Barfi',          emoji:'🍮', cat:'sweets',    price:1200, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/kaju-katli.png'},
-  {id:'s2',  name:'Ghee Laddu',          emoji:'🟡', cat:'sweets',    price:500,  unit:'Per kg', desc:'Traditional besan laddus made with pure desi ghee and cardamom.',                img:'images/sweets/ghee_laddu.jpeg'},
-  {id:'s3',  name:'Gulab Jamun',         emoji:'🫙', cat:'sweets',    price:300,  unit:'Per kg',  desc:'Soft khoya balls soaked in rose-cardamom sugar syrup. Served warm.',             img:'images/sweets/Gulab_Jamun.jpg'},
-  {id:'s4',  name:'Motichoor Laddu',     emoji:'🟠', cat:'sweets',    price:200,  unit:'Per kg',           desc:'Tiny boondi laddus bound with saffron syrup and dry fruits.',                    img:'images/sweets/motichoor_ladoo.jpg'},
-  {id:'s5',  name:'Sukha Rasgulla',      emoji:'⚪', cat:'sweets',    price:300,  unit:'Per kg',  desc:'Spongy chhena balls soaked in light sugar syrup. Bengali special.',               img:'images/sweets/sukha_rasgulla.jpeg'},
-  {id:'s6',  name:'Kalakand',            emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/kalakand.jpeg'},
-  {id:'s7',  name:'Cream Chamcham',      emoji:'🍮', cat:'sweets',    price:400, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/creem_chamcham.png'},
-  {id:'s8',  name:'Cream Chop',          emoji:'🍮', cat:'sweets',    price:50, unit:'Per piece',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/creem_chop.jpg'},
-  {id:'s9',  name:'Sponge',              emoji:'🍮', cat:'sweets',    price:300, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/spange.webp'},
-  {id:'s10', name:'Chamcham',            emoji:'🍮', cat:'sweets',    price:400, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/chamcham.jpeg'},
-  {id:'s11', name:'Peda',                emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/peda.jpeg'},
-  {id:'s12', name:'Khoya Barfi',         emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/khoya_slice.jpeg'},
-  {id:'s13', name:'Milk Cake',           emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/milk.jpeg'},
-  {id:'s14', name:'Chocolate Barfi',     emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/Chocolate_barfi.webp'},
-  {id:'s15', name:'Khoya Roll',          emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/khoya_roll.jpg'},
-  {id:'s16', name:'Khoya Slice',         emoji:'🍮', cat:'sweets',    price:600, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/khoya_slice.jpeg'},
-  {id:'s17', name:'Coconut Dry Fruit Laddu', emoji:'🍮', cat:'sweets', price:800, unit:'Per kg',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/coconut_dry_fruit.jpg'},
-  {id:'s18', name:'Dry Fruit Laddu',     emoji:'🍮', cat:'sweets',    price:1200, unit:'Per kg',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/Dry_fruits.jpg'},
-  {id:'s19', name:'Kaju Pista Roll',     emoji:'🍮', cat:'sweets',    price:2000, unit:'Per kg',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/kaju_pista_roll.jpg'},
-  {id:'s20', name:'Raskadam',            emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/raskadam.jpeg'},
-  {id:'s21', name:'Kaju Pan',            emoji:'🍮', cat:'sweets',    price:1200, unit:'Per kg',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/kaju_pan.jpg'},
-  {id:'s22', name:'Gee Besan Laddu',     emoji:'🍮', cat:'sweets',    price:500, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/ghee_besan_ladoo.jpeg'},
-  {id:'s23', name:'Gond Laddu',          emoji:'🍮', cat:'sweets',    price:6, unit:'Per piece',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/Gond_laddu.jpg'},
-  {id:'s24', name:'Pinni Laddu',         emoji:'🍮', cat:'sweets',    price:6, unit:'Per piece',          desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/pinni-laddo.png'},
-  {id:'s25', name:'Moti Pak',            emoji:'🍮', cat:'sweets',    price:600, unit:'Per kg',           desc:'Premium cashew fudge with silver leaf. Melt-in-mouth classic.',                  img:'images/sweets/moti_pak.jpg'},
-// Cake
-  {id:'c1',  name:'Chocolate Cake',      emoji:'🎂', cat:'cake',      price:300, unit:'Per pound',        desc:'Rich dark chocolate layer cake with ganache frosting.',                          img:'images/cake/Chocolate_Cake.webp'},
-  {id:'c2',  name:'Vanilla Cream Cake',  emoji:'🍰', cat:'cake',      price:320, unit:'Per pound',        desc:'Light vanilla sponge with fresh cream and fruit topping.',                       img:'images/cake/Vanilla_Cake.jpeg'},
-  {id:'c3',  name:'Pineapple Cake',      emoji:'🍍', cat:'cake',      price:350, unit:'Per pound',        desc:'Classic pineapple pastry with fresh cream and pineapple chunks.',                 img:'images/cake/Pineapple_Cake.webp'},
-  {id:'c4',  name:'Black Forest Cake',   emoji:'🍒', cat:'cake',      price:350, unit:'Per pound',        desc:'German chocolate cake with cherries, cream and chocolate shavings.',              img:'images/cake/Black_Forest_Cake.webp'},
-  {id:'c5',  name:'Butterscotch Cake',   emoji:'🧁', cat:'cake',      price:420, unit:'Per pound',        desc:"Smooth butterscotch cream cake with crunchy praline. Kids' favourite.",           img:'images/cake/Butterscotch_Cake.webp'},
-  {id:'c6',  name:'White Forest Cake',   emoji:'🧁', cat:'cake',      price:400, unit:'Per pound',        desc:"Smooth butterscotch cream cake with crunchy praline. Kids' favourite.",           img:'images/cake/White_Forest_cacke.webp'},
-  {id:'c7',  name:'Strawberry Cake',     emoji:'🍒', cat:'cake',      price:430, unit:'Per pound',        desc:"Smooth butterscotch cream cake with crunchy praline. Kids' favourite.",           img:'images/cake/Strawberry_Cake.webp'},
-  {id:'c8',  name:'Choco Chips Cake',    emoji:'🍒', cat:'cake',      price:400, unit:'Per pound',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Choco_Chips_cake.webp'},
-  {id:'c9',  name:'Fruits Cake',         emoji:'🍒', cat:'cake',      price:450, unit:'Per pound',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Fruit_cake.jpg'},
-  {id:'c10', name:'Truffle Cake',        emoji:'🍒', cat:'cake',      price:500, unit:'Per pound',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Truffle_cake.webp'},
-  {id:'c11', name:'Khoya Cake',          emoji:'🍒', cat:'cake',      price:700, unit:'Per pound',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Khoya_cake.webp'},
-  {id:'c12', name:'Pastry Cake',         emoji:'🍒', cat:'cake',      price:50,  unit:'Per piece',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Pastry.webp'},
-  {id:'c13', name:'Mofinse Cake',        emoji:'🍒', cat:'cake',      price:50,  unit:'Per pound',        desc:'Moist red velvet cake with cream cheese frosting.',                              img:'images/cake/Mopinse_cake.webp'},
-// Snacks
-  {id:'n1',  name:'Samosa',              emoji:'🔺', cat:'snacks',    price:8,  unit:'Per piece',          desc:'Crispy pastry filled with spiced potatoes and peas. With green chutney.',        img:'images/snacks/samosa.jpeg'},
-  {id:'n2',  name:'Kachori',             emoji:'🥙', cat:'snacks',    price:8,  unit:'Per piece',          desc:'Crispy fried pastry stuffed with spiced lentil filling.',                        img:'images/snacks/kachori.webp'},
-  {id:'n3',  name:'Litti',               emoji:'🌶', cat:'snacks',    price:8,  unit:'Per piece',          desc:'Green chillies dipped in spiced gram flour batter, deep fried golden.',          img:'images/snacks/litti.webp'},
-  {id:'n4',  name:'Cutlet',              emoji:'🍞', cat:'snacks',    price:6,  unit:'Per piece',          desc:'Bread slices coated in spiced batter, crispy deep fried till golden.',            img:'images/snacks/Cutlet.webp'},
-  {id:'n5',  name:'Samosa Chat',         emoji:'🧡', cat:'snacks',    price:25, unit:'Per plate',          desc:'Sweet semolina halwa with saffron, cashews and generous ghee.',                   img:'images/snacks/samosa_chat.webp'},
-  {id:'n6',  name:'Chowmein',            emoji:'🍔', cat:'snacks',    price:50, unit:'Per plate',          desc:'Spiced potato vada inside a soft pav bun with zesty green chutney.',              img:'images/snacks/Chowmein.webp'},
-  {id:'n7',  name:'Paneer Chowmein',     emoji:'🍔', cat:'snacks',    price:80, unit:'Per plate',          desc:'Spiced potato vada inside a soft pav bun with zesty green chutney.',              img:'images/snacks/Paneer_Chowmein.webp'},
-  {id:'n8',  name:'Burger',              emoji:'🍔', cat:'snacks',    price:50, unit:'Per piece',          desc:'Spiced potato vada inside a soft pav bun with zesty green chutney.',              img:'images/snacks/Burger.webp'},
-  {id:'n9',  name:'Paneer Burger',       emoji:'🍔', cat:'snacks',    price:80, unit:'Per piece',          desc:'Spiced potato vada inside a soft pav bun with zesty green chutney.',              img:'images/snacks/Paneer_Burger.webp'},
-// Drinks
-  {id:'r1',  name:'Filter Coffee',       emoji:'☕', cat:'drinks',    price:15, unit:'Per cup',            desc:'Traditional South Indian filter coffee served in davara-tumbler.',                img:'images/drinks/filter_coffee.webp'},
-  {id:'r2',  name:'Masala Chai',         emoji:'🍵', cat:'drinks',    price:15, unit:'Per cup',            desc:'Spiced ginger tea brewed with cardamom, cinnamon and cloves.',                    img:'images/drinks/masala_chai.webp'},
-  {id:'r3',  name:'Fresh Lime Soda',     emoji:'🥛', cat:'drinks',    price:15, unit:'Per glass',          desc:'Refreshing lime soda with a pinch of chaat masala.',                             img:'images/drinks/lemon_soda.webp'},
-  {id:'r4',  name:'Coca-Cola',           emoji:'🥤', cat:'drinks',    price:35, unit:'Per can',            desc:'Ice-cold Coca-Cola can.',                                                        img:'images/drinks/cocacola.webp'},
-  {id:'r5',  name:'Sprite',              emoji:'🥤', cat:'drinks',    price:35, unit:'Per can',            desc:'Chilled Sprite — crisp & refreshing.',                                          img:'images/drinks/sprites.webp'},
-  {id:'r6',  name:'Thums Up',            emoji:'🥤', cat:'drinks',    price:35, unit:'Per can',            desc:'Bold & fizzy Thums Up can.',                                                     img:'images/drinks/ThumsUp.webp'},
-];
+// MENU is loaded from config.js
+
 
 /* ═══════════════════════════════════════════
    RENDER MENU
@@ -1636,6 +1630,8 @@ function toggleCart() {
   }
 }
 
+// ── LINE 1639: Yeh function ab "COD button" click hone par chalta hai ──
+// Yeh order data collect karta hai aur Firebase module function ko call karta hai
 function placeOrder() {
   if (!cart.length) { toast('🛒 Please add items first!'); return; }
   if (!locChecked) {
@@ -1659,8 +1655,25 @@ function placeOrder() {
   var lastOrderId = parseInt(localStorage.getItem('aryansweetsOrderId') || '0', 10);
   var orderId = (lastOrderId >= 999) ? 1 : lastOrderId + 1;
   localStorage.setItem('aryansweetsOrderId', orderId);
-  var orderIdStr = '#' + String(orderId).padStart(3, '0');
+  var orderIdStr = 'O' + String(orderId).padStart(2, '0');
 
+  // ── Order object banao jo Firebase mein jayega ──
+  var orderData = {
+    orderId:  orderIdStr,
+    name:     name,
+    phone:    phone,
+    address:  addr || 'Not provided',
+    items:    cart.map(function(c){ return { name: c.name, price: c.price, qty: c.qty }; }),
+    subtotal: subtotal,
+    delivery: delivery.charge,
+    grandTotal: grandTotal,
+    coupon:   appliedCoupon ? appliedCoupon.code : null,
+    discount: couponDisc,
+    status:   'pending',
+    time:     new Date()
+  };
+
+  // ── WhatsApp message banao ──
   var lines = [
     '🍽️ *NEW ORDER — श्री आर्यन स्वीट्स*',
     '━━━━━━━━━━━━━━━━━━━━',
@@ -1682,8 +1695,7 @@ function placeOrder() {
   lines.push('💰 *Grand Total: ₹' + grandTotal + '*');
   lines.push('✅ Please confirm & prepare!');
 
-  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
-
+  // ── Cart clear karo ──
   cart = [];
   appliedCoupon = null;
   locChecked = false;
@@ -1692,7 +1704,19 @@ function placeOrder() {
   document.getElementById('oName').value  = '';
   document.getElementById('oPhone').value = '';
   document.getElementById('oAddr').value  = '';
+
+  // ── WhatsApp + Modal — hamesha chalega ──
+  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
   showModal('🎉', 'Order Placed!', 'Thank you, ' + name + '! We will call you on ' + phone + ' to confirm shortly. 🙏');
+
+  // ── Secure API call — Firebase directly nahi, Cloud Function ke through ──
+  fetch(CONFIG.api.base_url + '/submitOrder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData)
+  }).then(function(r){ return r.json(); })
+    .then(function(d){ if(d.success) console.log('✅ Order saved via API!'); })
+    .catch(function(err){ console.error('❌ API error:', err); });
 }
 
 /* ═══════════════════════════════════════════
@@ -1771,5 +1795,14 @@ renderMenu('all');
 buildTables();
 refreshCart();
 </script>
+
+<!-- ✅ Orders ab Cloud Function ke through save hote hain — Firebase SDK remove kiya gaya -->
+<script>
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('scrollTopBtn');
+  btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+});
+</script>
+<button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
 </body>
 </html>
