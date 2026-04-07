@@ -88,7 +88,7 @@ api: {
     gold:        '#F5C518',
     gold_light:  '#FFD84D',
     gold_dark:   '#C9960C',
-    dark:        '#0D0D00',
+    dark:        '#0D0D00', 
     dark2:       '#161600',
     dark3:       '#1F1F00',
     cream:       '#FFF8DC',
